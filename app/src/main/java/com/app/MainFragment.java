@@ -17,16 +17,14 @@ public class MainFragment extends ListFragment {
     /**
      * Variables
      */
-
     // Logger Tag
     public static final String TAG = "NEWS FEED";
     // Listener for fragment interaction with host activity
     private OnFragmentInteractionListener mListener;
 
     /**
-     * Overridden base functions
+     * Lifecycle functions
      */
-
     public static MainFragment newInstance() {
         return new MainFragment();
     }
@@ -66,13 +64,16 @@ public class MainFragment extends ListFragment {
     }
 
     /**
-     * Created classes
+     * Listeners
      */
-
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
 
+    /**
+     * NewsFeedAdapter
+     * Adapter to populate the news feed
+     */
     public class NewsFeedAdapter extends ArrayAdapter<String> {
         final Context context;
 
