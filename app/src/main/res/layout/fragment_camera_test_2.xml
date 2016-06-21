@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Camera.CameraTestFragment">
+    tools:context="com.app.Camera.CameraTestFragment2">
 
     <com.app.Utils.AutoResizeTextureView
         android:id="@+id/camera_test"

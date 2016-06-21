@@ -3,7 +3,7 @@
     android:id="@+id/camera_button"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorCameraButton" >
+    android:background="@android:color/transparent" >
 
     <TextView
         android:id="@+id/score"
@@ -26,7 +26,6 @@
         android:layout_below="@id/score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/camera_button_background"
         android:clickable="true">
 
         <TextView
@@ -58,20 +57,4 @@
             android:textSize="10sp"
             android:layout_toRightOf="@id/camera_icon" />
     </RelativeLayout>
-
-    <com.app.CameraTextureView
-        android:id="@+id/camera_preview"
-        android:layout_below="@id/show_camera_button"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/photo_height" />
-
-    <ImageView
-        android:id="@+id/take_photo_button"
-        android:layout_centerHorizontal="true"
-        android:layout_alignBottom="@+id/camera_preview"
-        android:src="@drawable/take_photo_button"
-        android:clickable="true"
-        android:layout_width="50dp"
-        android:layout_height="30dp"
-        android:layout_marginBottom="10dp"/>
 </RelativeLayout>

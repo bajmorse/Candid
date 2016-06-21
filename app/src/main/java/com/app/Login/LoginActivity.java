@@ -1,4 +1,4 @@
-package com.app;
+package com.app.Login;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -33,6 +33,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.app.MainActivity;
+import com.app.R;
 import com.facebook.FacebookSdk;
 
 import static android.Manifest.permission.READ_CONTACTS;
