@@ -1,10 +1,12 @@
 package com.app.Utils;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentCompat;
@@ -29,6 +31,16 @@ public class CandidUtils {
 
     private final static String PERMISSIONS_KEY = "permissions";
     private final static String REQUEST_CODE_KEY = "request";
+
+    @TargetApi(Build.VERSION_CODES.M)
+    public static void requestPermission(@NonNull final AppCompatActivity activity, final String[] permissions, final int requestCode) {
+        if (activity.shouldShowRequestPermissionRationale(permissions[0])) {
+            PermissionRequestDialog permissionDialog = PermissionRequestDialog.newInstance(permissions, requestCode);
+            permissionDialog.show(activity.getSupportFragmentManager(), "dialog");
+        } else {
+            activity.requestPermissions(permissions, requestCode);
+        }
+    }
 
     public static void requestPermission(@NonNull final Fragment fragment, final String[] permissions, final int requestCode) {
         if (fragment.shouldShowRequestPermissionRationale(permissions[0])) {
