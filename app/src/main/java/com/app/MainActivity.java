@@ -1,33 +1,27 @@
 package com.app;
 
-import android.content.Context;
-import android.database.DataSetObserver;
-import android.media.Image;
 import android.net.Uri;
-import android.support.design.widget.TabLayout;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AppCompatActivity;
-
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity implements MainFragment.OnFragmentInteractionListener, CameraTestFragment.OnFragmentInteractionListener {
+import com.app.Camera.CameraTestFragment;
+import com.app.Camera.CameraTestFragment2;
+
+public class MainActivity extends AppCompatActivity implements
+        MainFragment.OnFragmentInteractionListener,
+        CameraTestFragment.OnFragmentInteractionListener,
+        CameraTestFragment2.OnFragmentInteractionListener {
 
     // Adapter for the tab sections at the top
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -59,19 +53,6 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
             mTabLayout.setupWithViewPager(mViewPager);
         }
         setupTabLayout();
-
-        // Set up the floating action button
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        if (fab != null) {
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-            });
-        }
-
     }
 
     /**
@@ -154,10 +135,13 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         public Fragment getItem(int position) {
             switch (position) {
                 case PROFILE_TAB: {
-                    return new CameraTestFragment();
+                    return new Fragment(); //CameraTestFragment.newInstance();
                 }
                 case MAIN_TAB: {
-                    return new MainFragment();
+                    return MainFragment.newInstance();
+                }
+                case CONNECT_TAB: {
+                    return CameraTestFragment2.newInstance();
                 }
                 default: return new Fragment();
             }

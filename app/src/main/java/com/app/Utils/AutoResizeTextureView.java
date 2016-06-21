@@ -1,37 +1,27 @@
-package com.app;
+package com.app.Utils;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.hardware.Camera;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.SurfaceHolder;
-import android.view.SurfaceHolder.Callback;
-import android.view.SurfaceView;
 import android.view.TextureView;
-
-import java.io.IOException;
-import java.util.AbstractSet;
 
 /**
  * Created by brent on 2016-06-14.
  */
-public class CameraTextureView extends TextureView {
+public class AutoResizeTextureView extends TextureView {
 
     // Size ratio
     private int mRatioWidth = 0;
     private int mRatioHeight = 0;
 
-    public CameraTextureView(Context context) {
+    public AutoResizeTextureView(Context context) {
         this(context, null);
     }
 
-    public CameraTextureView(Context context, AttributeSet set) {
+    public AutoResizeTextureView(Context context, AttributeSet set) {
         this(context, set, 0);
     }
 
-    public CameraTextureView(Context context, AttributeSet set, int defStyle) {
+    public AutoResizeTextureView(Context context, AttributeSet set, int defStyle) {
         super(context, set, defStyle);
     }
 
