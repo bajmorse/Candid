@@ -1,0 +1,166 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.app.Profile.ProfileFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorBackground" >
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/profile_map"
+                android:apiKey="@string/google_maps_api_key"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/map_height"
+                android:nestedScrollingEnabled="false" />
+
+            <RelativeLayout
+                android:id="@+id/profile_picture_holder"
+                android:layout_below="@id/profile_map"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/profile_pic_height"
+                android:paddingBottom="5dp"
+                android:background="@color/offWhite">
+
+                <ImageView
+                    android:id="@+id/profile_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/profile_pic_top_margin"
+                    android:layout_marginLeft="@dimen/profile_pick_side_margin"
+                    android:layout_marginRight="@dimen/profile_pick_side_margin"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/zelda1" />
+
+                <TextView
+                    android:id="@+id/profile_username"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/profile_pic_top_margin"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:text="Username" />
+
+                <TextView
+                    android:id="@+id/profile_score"
+                    android:layout_alignParentBottom="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/profile_score_height"
+                    android:layout_marginLeft="@dimen/profile_pick_side_margin"
+                    android:layout_marginRight="@dimen/profile_pick_side_margin"
+                    android:background="@color/profileScoreBackground"
+                    android:textSize="50sp"
+                    android:textStyle="bold"
+                    android:textAlignment="center"
+                    android:text="12345"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/my_candids"
+                android:layout_below="@id/profile_picture_holder"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/profile_options_height"
+                android:padding="10dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:text="My Candids" />
+
+                <ImageView
+                    android:layout_alignParentRight="true"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/profile_my_candids_icon" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/my_candid_conversations"
+                android:layout_below="@id/my_candids"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/profile_options_height"
+                android:padding="10dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:text="My Candid Conversations" />
+
+                <ImageView
+                    android:layout_alignParentRight="true"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/profile_my_candid_conversations_icon" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/profile_support"
+                android:layout_below="@id/my_candid_conversations"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/profile_options_height"
+                android:padding="10dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:text="Support" />
+
+                <ImageView
+                    android:layout_alignParentRight="true"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/profile_settings_icon" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/facebook_connect_tray"
+                android:layout_below="@id/profile_support"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/profile_connect_tray_height"
+                android:padding="@dimen/profile_connect_button_padding" >
+
+                <ImageView
+                    android:id="@+id/facebook_button"
+                    android:layout_width="@dimen/profile_connect_button_size"
+                    android:layout_height="@dimen/profile_connect_button_size"
+                    android:layout_marginRight="@dimen/profile_connect_button_spacing"
+                    android:src="@drawable/profile_connect_facebook" />
+
+                <ImageView
+                    android:id="@+id/twitter_button"
+                    android:layout_toRightOf="@id/facebook_button"
+                    android:layout_width="@dimen/profile_connect_button_size"
+                    android:layout_height="@dimen/profile_connect_button_size"
+                    android:layout_marginRight="@dimen/profile_connect_button_spacing"
+                    android:src="@drawable/profile_connect_twitter" />
+
+                <ImageView
+                    android:id="@+id/google_plus_button"
+                    android:layout_toRightOf="@id/twitter_button"
+                    android:layout_width="@dimen/profile_connect_button_size"
+                    android:layout_height="@dimen/profile_connect_button_size"
+                    android:layout_marginRight="@dimen/profile_connect_button_spacing"
+                    android:src="@drawable/profile_connect_google_plus" />
+
+                <ImageView
+                    android:id="@+id/website_button"
+                    android:layout_toRightOf="@id/google_plus_button"
+                    android:layout_width="@dimen/profile_connect_button_size"
+                    android:layout_height="@dimen/profile_connect_button_size"
+                    android:src="@drawable/profile_connect_web" />
+
+            </RelativeLayout>
+    </RelativeLayout>
+    
+</ScrollView>

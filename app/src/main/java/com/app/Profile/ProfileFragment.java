@@ -1,15 +1,23 @@
 package com.app.Profile;
 
 import android.content.Context;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.app.R;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -17,7 +25,9 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     // Logger tag
     public static final String TAG = "PROFILE_FRAG";
@@ -26,6 +36,8 @@ public class ProfileFragment extends Fragment {
     // Map
     private GoogleMap mMap;
     private MapView mMapView;
+    private Location mMyLocation;
+    private GoogleApiClient mGoogleApiClient;
 
     /**
      * Lifecycle functions
@@ -35,11 +47,31 @@ public class ProfileFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(getContext())
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        View view = inflater.inflate(R.layout.profile_fragment, container, false);
 
+        // Setup fragment views
+        setupMap(view, savedInstanceState);
+
+        return view;
+    }
+
+    private void setupMap(View view, Bundle savedInstanceState) {
         // Get map view
         mMapView = (MapView) view.findViewById(R.id.profile_map);
         mMapView.onCreate(savedInstanceState);
@@ -47,16 +79,23 @@ public class ProfileFragment extends Fragment {
         // Get map
         mMap = mMapView.getMap();
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mMap.getUiSettings().setAllGesturesEnabled(false);
         mMap.setMyLocationEnabled(true);
 
         // Initialize map
         MapsInitializer.initialize(getActivity());
+    }
 
-        // Map updater
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(43.1, -87.9), 10);
-        mMap.animateCamera(cameraUpdate);
+    @Override
+    public void onStart() {
+        if (mGoogleApiClient != null) mGoogleApiClient.connect();
+        super.onStart();
+    }
 
-        return view;
+    @Override
+    public void onStop() {
+        if (mGoogleApiClient != null) mGoogleApiClient.disconnect();
+        super.onStop();
     }
 
     @Override
@@ -101,10 +140,34 @@ public class ProfileFragment extends Fragment {
     }
 
     /**
+     * Google maps listeners and callbacks
+     */
+    @Override
+    public void onConnected(Bundle bundle) {
+        // Get location
+        mMyLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        // Update map to location
+        if (mMyLocation != null) {
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mMyLocation.getLatitude(), mMyLocation.getLongitude()), 14);
+            mMap.animateCamera(cameraUpdate);
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+
+    /**
      * Fragment listener
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

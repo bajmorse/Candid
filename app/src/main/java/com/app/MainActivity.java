@@ -43,7 +43,9 @@ import android.view.TextureView;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.app.Connect.ConnectFragment;
 import com.app.NewsFeed.NewsFeedFragment;
+import com.app.Profile.ProfileFragment;
 import com.app._TestingFragments.HorizontalScrollTestFragment;
 import com.app.CustomViews.AutoResizeTextureView;
 import com.app.Utils.CandidUtils;
@@ -53,7 +55,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Semaphore;
@@ -62,7 +66,8 @@ import java.util.concurrent.TimeUnit;
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class MainActivity extends AppCompatActivity implements
         NewsFeedFragment.OnFragmentInteractionListener,
-        HorizontalScrollTestFragment.OnFragmentInteractionListener,
+        ProfileFragment.OnFragmentInteractionListener,
+        ConnectFragment.OnFragmentInteractionListener,
         TextureView.SurfaceTextureListener {
 
     /**
@@ -82,8 +87,9 @@ public class MainActivity extends AppCompatActivity implements
      */
     // Permissions
     private static final int CAMERA_PERMISSIONS = 1;
-    private static final int READ_WRITE_PERMISSIONS = 4;
-    private static final int READ_WRITE_CAMERA_PERMISSIONS = 5;
+    private static final int READ_WRITE_PERMISSIONS = 2;
+    private static final int LOCATION_PERMISSIONS = 3;
+    private static final int PERMISSIONS = 9;
     // Camera Orientations
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     static {
@@ -180,12 +186,18 @@ public class MainActivity extends AppCompatActivity implements
         // Check permissions
         boolean hasCameraPermissions = (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED);
         boolean hasStoragePermissions = (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
-        if (!hasCameraPermissions && !hasStoragePermissions) {
-            CandidUtils.requestPermission(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, READ_WRITE_CAMERA_PERMISSIONS);
-        } else if (!hasCameraPermissions) {
-            CandidUtils.requestPermission(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSIONS);
-        } else if (!hasStoragePermissions) {
-            CandidUtils.requestPermission(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, READ_WRITE_PERMISSIONS);
+        boolean hasLocationPermissions = (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+
+        ArrayList<String> permissions = new ArrayList<>();
+        if (!hasCameraPermissions) permissions.add(Manifest.permission.CAMERA);
+        if (!hasStoragePermissions) {
+            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+            permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (!hasLocationPermissions) permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        if (!permissions.isEmpty()) {
+            String[] permissionsList = permissions.toArray(new String[permissions.size()]);
+            CandidUtils.requestPermission(this, permissionsList, !hasCameraPermissions ? CAMERA_PERMISSIONS : PERMISSIONS);
         }
 
         // Setup capture directory
@@ -536,8 +548,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         Log.d(TAG, "Permission request result");
         switch (requestCode) {
-            case CAMERA_PERMISSIONS:
-            case READ_WRITE_CAMERA_PERMISSIONS: {
+            case CAMERA_PERMISSIONS: {
                 boolean cameraPermissionGranted = false;
                 for (int idx = 0; idx < permissions.length; idx++) {
                     if (Objects.equals(permissions[idx], Manifest.permission.CAMERA) && grantResults[idx] == PackageManager.PERMISSION_GRANTED) {
@@ -757,13 +768,13 @@ public class MainActivity extends AppCompatActivity implements
         public Fragment getItem(int position) {
             switch (position) {
                 case PROFILE_TAB: {
-                    return new Fragment(); //HorizontalScrollTestFragment.newInstance();
+                    return ProfileFragment.newInstance();
                 }
                 case MAIN_TAB: {
                     return NewsFeedFragment.newInstance();
                 }
                 case CONNECT_TAB: {
-                    return new Fragment(); //CameraTestFragment2.newInstance();
+                    return ConnectFragment.newInstance();
                 }
                 default: return new Fragment();
             }

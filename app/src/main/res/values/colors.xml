@@ -9,7 +9,7 @@
     <color name="red">#ffe10020</color>
     <color name="orange">#ffff6600</color>
     <color name="yellow">#ffdddd00</color>
-    <color name="green">#ff297a02</color>
+    <color name="green">#ff32d523</color>
     <color name="blue">#ff0000dd</color>
     <color name="purple">#ff6600a2</color>
     <color name="pink">#fff76bc2</color>
@@ -38,4 +38,7 @@
     <color name="colorBackgroundTranslucent">#88e8e8e8</color>
     <color name="colorCameraButton">#ffffff</color>
     <color name="colorCameraButtonPressed">#dddddd</color>
+
+    <!-- Profile colors -->
+    <color name="profileScoreBackground">#55ffffff</color>
 </resources>
