@@ -81,45 +81,50 @@
         android:id="@+id/themes_bar"
         android:layout_below="@id/show_camera_button"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="40dp"
         android:background="@color/colorCameraButton">
 
         <ImageView
             android:id="@+id/nightlife_theme_button"
             android:layout_width="30dp"
             android:layout_height="match_parent"
-            android:background="@android:color/holo_blue_light" />
+            android:layout_margin="@dimen/news_feed_theme_button_padding"
+            android:src="@drawable/theme_nightlife" />
 
         <ImageView
             android:id="@+id/scenery_theme_button"
             android:layout_width="30dp"
             android:layout_height="match_parent"
+            android:layout_margin="@dimen/news_feed_theme_button_padding"
             android:layout_toRightOf="@id/nightlife_theme_button"
             android:layout_toEndOf="@id/nightlife_theme_button"
-            android:background="@android:color/holo_green_light" />
+            android:src="@drawable/theme_scenery"/>
 
         <ImageView
             android:id="@+id/selfie_theme_button"
             android:layout_width="30dp"
             android:layout_height="match_parent"
+            android:layout_margin="@dimen/news_feed_theme_button_padding"
             android:layout_toRightOf="@id/scenery_theme_button"
             android:layout_toEndOf="@id/scenery_theme_button"
-            android:background="@android:color/holo_red_light" />
+            android:src="@drawable/theme_selfie" />
 
         <ImageView
             android:id="@+id/star_theme_button"
             android:layout_width="30dp"
             android:layout_height="match_parent"
+            android:layout_margin="@dimen/news_feed_theme_button_padding"
             android:layout_toRightOf="@id/selfie_theme_button"
             android:layout_toEndOf="@id/selfie_theme_button"
-            android:background="@android:color/holo_orange_light" />
+            android:src="@drawable/theme_star" />
 
         <ImageView
             android:id="@+id/hot_theme_button"
             android:layout_width="30dp"
             android:layout_height="match_parent"
+            android:layout_margin="@dimen/news_feed_theme_button_padding"
             android:layout_alignParentRight="true"
-            android:background="@android:color/holo_purple" />
+            android:src="@drawable/theme_hot" />
 
     </RelativeLayout>
 </RelativeLayout>

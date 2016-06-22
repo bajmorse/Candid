@@ -3,7 +3,7 @@
 
     <!-- API keys -->
     <string name="facebook_app_id">866669193439142</string>
-    <string name="google_maps_app_id">AIzaSyA7m4y_A-BVEmput2MDF-EcSw5lznkRK90</string>
+    <string name="google_maps_api_key">AIzaSyA7m4y_A-BVEmput2MDF-EcSw5lznkRK90</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -26,4 +26,7 @@
         <item>Sit</item>
         <item>Amet</item>
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
