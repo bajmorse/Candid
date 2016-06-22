@@ -1,11 +1,10 @@
-package com.app.Camera;
+package com.app._TestingFragments;
 
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -20,7 +19,6 @@ import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.DngCreator;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
-import android.media.ExifInterface;
 import android.media.Image;
 import android.media.ImageReader;
 import android.net.Uri;
@@ -41,7 +39,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.app.R;
-import com.app.Utils.AutoResizeTextureView;
+import com.app.CustomViews.AutoResizeTextureView;
 import com.app.Utils.CandidUtils;
 
 import java.io.File;
@@ -116,7 +114,7 @@ public class CameraTestFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate view
-        return inflater.inflate(R.layout.fragment_camera_test, container, false);
+        return inflater.inflate(R.layout.camera_test_fragment, container, false);
     }
 
     @Override

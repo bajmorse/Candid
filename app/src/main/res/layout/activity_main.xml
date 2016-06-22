@@ -22,7 +22,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <com.app.Utils.AutoResizeTextureView
+    <com.app.CustomViews.AutoResizeTextureView
         android:id="@+id/camera_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -2,7 +2,6 @@ package com.app;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
@@ -27,10 +26,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -47,9 +43,9 @@ import android.view.TextureView;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.app.Camera.CameraTestFragment;
-import com.app.Camera.CameraTestFragment2;
-import com.app.Utils.AutoResizeTextureView;
+import com.app.NewsFeed.NewsFeedFragment;
+import com.app._TestingFragments.HorizontalScrollTestFragment;
+import com.app.CustomViews.AutoResizeTextureView;
 import com.app.Utils.CandidUtils;
 
 import java.io.File;
@@ -65,9 +61,8 @@ import java.util.concurrent.TimeUnit;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class MainActivity extends AppCompatActivity implements
-        MainFragment.OnFragmentInteractionListener,
-        CameraTestFragment.OnFragmentInteractionListener,
-        CameraTestFragment2.OnFragmentInteractionListener,
+        NewsFeedFragment.OnFragmentInteractionListener,
+        HorizontalScrollTestFragment.OnFragmentInteractionListener,
         TextureView.SurfaceTextureListener {
 
     /**
@@ -87,8 +82,6 @@ public class MainActivity extends AppCompatActivity implements
      */
     // Permissions
     private static final int CAMERA_PERMISSIONS = 1;
-    private static final int READ_PERMISSIONS = 2;
-    private static final int WRITE_PERMISSIONS = 3;
     private static final int READ_WRITE_PERMISSIONS = 4;
     private static final int READ_WRITE_CAMERA_PERMISSIONS = 5;
     // Camera Orientations
@@ -211,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements
 
         TabLayout.Tab leftTab = mTabLayout.getTabAt(0);
         if (leftTab != null) {
-            View view = getLayoutInflater().inflate(R.layout.profile_tab, null);
+            View view = getLayoutInflater().inflate(R.layout.tab_profile, null);
             ImageView icon = (ImageView) view.findViewById(R.id.profile_icon);
             icon.setImageResource(R.drawable.profile_icon);
             leftTab.setCustomView(view);
@@ -219,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements
 
         TabLayout.Tab centerTab = mTabLayout.getTabAt(1);
         if (centerTab != null) {
-            View view = getLayoutInflater().inflate(R.layout.candid_tab, null);
+            View view = getLayoutInflater().inflate(R.layout.tab_candid, null);
             ImageView title = (ImageView) view.findViewById(R.id.candid_title);
             title.setImageResource(R.drawable.title);
             centerTab.setCustomView(view);
@@ -228,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements
 
         TabLayout.Tab rightTab = mTabLayout.getTabAt(2);
         if (rightTab != null) {
-            View view = getLayoutInflater().inflate(R.layout.connect_tab, null);
+            View view = getLayoutInflater().inflate(R.layout.tab_connect, null);
             ImageView icon = (ImageView) view.findViewById(R.id.connect_icon);
             icon.setImageResource(R.drawable.connect_icon);
             rightTab.setCustomView(view);
@@ -764,10 +757,10 @@ public class MainActivity extends AppCompatActivity implements
         public Fragment getItem(int position) {
             switch (position) {
                 case PROFILE_TAB: {
-                    return new Fragment(); //CameraTestFragment.newInstance();
+                    return new Fragment(); //HorizontalScrollTestFragment.newInstance();
                 }
                 case MAIN_TAB: {
-                    return MainFragment.newInstance();
+                    return NewsFeedFragment.newInstance();
                 }
                 case CONNECT_TAB: {
                     return new Fragment(); //CameraTestFragment2.newInstance();

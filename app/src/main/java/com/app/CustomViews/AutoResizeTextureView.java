@@ -1,4 +1,4 @@
-package com.app.Utils;
+package com.app.CustomViews;
 
 import android.content.Context;
 import android.util.AttributeSet;
