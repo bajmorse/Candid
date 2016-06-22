@@ -1,4 +1,4 @@
-package com.app.Camera;
+package com.app._TestingFragments;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -41,7 +41,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.app.R;
-import com.app.Utils.AutoResizeTextureView;
+import com.app.CustomViews.AutoResizeTextureView;
 import com.app.Utils.CandidUtils;
 
 import java.io.File;
@@ -153,7 +153,7 @@ public class CameraTestFragment2 extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_camera_test_2, container, false);
+        return inflater.inflate(R.layout.camera_test_2_fragment, container, false);
     }
 
     @Override

@@ -1,9 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Theme colors -->
     <color name="colorPrimary">#A326d7</color>
     <color name="colorPrimaryDark">#991ecc</color>
     <color name="colorAccent">#325ff0</color>
+
+    <!-- Standard colors -->
+    <color name="red">#ffe10020</color>
+    <color name="orange">#ffff6600</color>
+    <color name="yellow">#ffdddd00</color>
+    <color name="green">#ff297a02</color>
+    <color name="blue">#ff0000dd</color>
+    <color name="purple">#ff6600a2</color>
+    <color name="pink">#fff76bc2</color>
+    <color name="white">#ffffffff</color>
+    <color name="black">#ff000000</color>
+
+    <!-- Generic colors -->
+    <color name="offWhite">#dddddd</color>
+    <color name="offBlack">#222222</color>
+    <color name="shadowColor">#aadddddd</color>
+
+    <!-- New feed themes -->
+    <color name="nightlifeThemeColor">#3322ff</color>
+    <color name="nightlifeThemeColorTranslucent">#883322ff</color>
+    <color name="sceneryThemeColor">#009900</color>
+    <color name="sceneryThemeColorTranslucent">#88009900</color>
+    <color name="selfieThemeColor">#aa0000</color>
+    <color name="selfieThemeColorTranslucent">#88aa0000</color>
+    <color name="starThemeColor">#ffff00</color>
+    <color name="starThemeColorTranslucent">#88ffff00</color>
+    <color name="hotThemeColor">@color/colorPrimary</color>
+    <color name="hotThemeColorTranslucent">#88A326d7</color>
+
+    <!-- News feed colors -->
     <color name="colorBackground">#e8e8e8</color>
+    <color name="colorBackgroundTranslucent">#88e8e8e8</color>
     <color name="colorCameraButton">#ffffff</color>
     <color name="colorCameraButtonPressed">#dddddd</color>
 </resources>

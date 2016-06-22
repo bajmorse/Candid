@@ -16,9 +16,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.app.R;
+
 import java.io.Serializable;
+import java.util.Random;
 
 /**
  * Created by brent on 2016-06-16.
@@ -139,6 +143,24 @@ public class CandidUtils {
                                 }
                             })
                     .create();
+        }
+    }
+
+    /**
+     * Color
+     */
+    public static int getRandomColor(Context context) {
+        Random rng = new Random();
+        int color = rng.nextInt(7);
+        switch (color) {
+            case 0: return context.getResources().getColor(R.color.red);
+            case 1: return context.getResources().getColor(R.color.orange);
+            case 2: return context.getResources().getColor(R.color.yellow);
+            case 3: return context.getResources().getColor(R.color.green);
+            case 4: return context.getResources().getColor(R.color.blue);
+            case 5: return context.getResources().getColor(R.color.purple);
+            case 7: return context.getResources().getColor(R.color.pink);
+            default: return context.getResources().getColor(R.color.black);
         }
     }
 }

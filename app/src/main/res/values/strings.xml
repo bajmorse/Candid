@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Candid</string>
 
+    <!-- API keys -->
+    <string name="facebook_app_id">866669193439142</string>
+    <string name="google_maps_app_id">AIzaSyA7m4y_A-BVEmput2MDF-EcSw5lznkRK90</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -11,7 +15,6 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
-    <string name="facebook_app_id">866669193439142</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
@@ -23,7 +26,4 @@
         <item>Sit</item>
         <item>Amet</item>
     </string-array>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
