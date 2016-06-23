@@ -43,5 +43,6 @@
     <dimen name="chats_comic_height">275dp</dimen>
     <dimen name="chats_comic_item_width">150dp</dimen>
     <dimen name="chats_comic_item_caption_height">50dp</dimen>
+    <dimen name="chats_comic_item_caption_padding">6dp</dimen>
     <dimen name="chats_storyline_item_width">42dp</dimen>
 </resources>

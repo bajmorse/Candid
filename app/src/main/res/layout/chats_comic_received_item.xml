@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="@dimen/chats_comic_item_width"
+    android:layout_height="match_parent"
+    android:layout_marginRight="@dimen/chats_margin" >
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/chats_comic_caption"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/chats_comic_item_caption_height"
+        android:paddingTop="@dimen/chats_margin"
+        android:paddingBottom="@dimen/chats_margin"
+        android:paddingLeft="@dimen/chats_comic_item_caption_padding"
+        android:paddingRight="@dimen/chats_comic_item_caption_padding"
+        android:layout_margin="@dimen/chats_margin"
+        android:background="@drawable/chat_comic_item_caption_background"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/chats_comic_picture"
+        android:layout_below="@id/chats_comic_caption"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</RelativeLayout>

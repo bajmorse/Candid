@@ -22,12 +22,14 @@ public class Candid implements Serializable {
     }
     private CandidSource mCandidSource;
     private int mCandidPicture;
+    private String mCandidCaption;
 
     /**
      * Constructor
      */
-    public Candid(int candidPicture, CandidSource candidSource) {
+    public Candid(int candidPicture, String candidCaption, CandidSource candidSource) {
         mCandidPicture = candidPicture;
+        mCandidCaption = candidCaption;
         mCandidSource = candidSource;
     }
 
@@ -36,6 +38,10 @@ public class Candid implements Serializable {
      */
     public int getCandidPicture() {
         return mCandidPicture;
+    }
+
+    public String getCandidCaption() {
+        return mCandidCaption;
     }
 
     public CandidSource getCandidSource() {
@@ -47,6 +53,10 @@ public class Candid implements Serializable {
      */
     public void setCandidPicture(int candidPicture) {
         mCandidPicture = candidPicture;
+    }
+
+    public void setCandidCaption(String candidCaption) {
+        mCandidCaption = candidCaption;
     }
 
     public void setCandidSource(CandidSource candidSource) {

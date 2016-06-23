@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -108,19 +109,33 @@ public class ConnectFragment extends Fragment implements
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        ChatsFragment friendChatFragment = new ChatsFragment();
-        Bundle friendBundle = new Bundle();
-        Friend friend = (Friend) mFriendsListView.getAdapter().getItem(position);
-        friendBundle.putSerializable(ChatsFragment.FRIEND_KEY, (Serializable) friend);
-        friendChatFragment.setArguments(friendBundle);
-        getChildFragmentManager().beginTransaction().replace(R.id.connect_fragment, friendChatFragment).commit();
+        // Get friend data for clicked friend
+        Friend friend = (Friend) mFriendsListAdapter.getItem(position);
 
-        Log.d(TAG, "Selected friend: " + friend.getUsername());
+        // Open chat with that friend
+        openChat(friend);
     }
 
     @Override
     public void onClick(View view) {
-        Log.d(TAG, "Selected sticky friend");
+        // Get friend data for clicked friend
+        Friend friend = (Friend) ((StickyFriendsAdapter) mStickyFriendsAdapter).getItem((Integer) view.getTag());
+
+        // Open chat with that friend
+        openChat(friend);
+    }
+
+    private void openChat(Friend friend) {
+        ChatsFragment friendChatFragment = new ChatsFragment();
+        Bundle friendBundle = new Bundle();
+        friendBundle.putSerializable(ChatsFragment.FRIEND_KEY, (Serializable) friend);
+        friendChatFragment.setArguments(friendBundle);
+
+        // Create fragment transaction
+        FragmentTransaction chatFragmentTransaction = getChildFragmentManager().beginTransaction();
+        chatFragmentTransaction.setCustomAnimations(R.anim.slide_in_from_right, R.anim.slide_out_to_right);
+        chatFragmentTransaction.replace(R.id.connect_fragment, friendChatFragment);
+        chatFragmentTransaction.commit();
     }
 
     /**

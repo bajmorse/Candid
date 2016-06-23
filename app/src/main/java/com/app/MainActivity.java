@@ -280,9 +280,6 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {}
-
     /**
      * Camera initialization functions
      */
@@ -792,5 +789,15 @@ public class MainActivity extends AppCompatActivity implements
         public CharSequence getPageTitle(int position) {
             return null;
         }
+    }
+
+    /**
+     * Fragment interaction
+     */
+    @Override
+    public void onFragmentInteraction(Uri uri) {}
+
+    @Override
+    public void onChatFragmentOpened() {
     }
 }

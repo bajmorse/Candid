@@ -22,7 +22,7 @@ public class StorylineAdapter extends RecyclerView.Adapter<StorylineAdapter.Stor
     // Logging tag
     public static final String TAG = "STORYLINE_ADAPTER";
     // Data
-    ArrayList<Candid> mCandids;
+    ArrayList<Candid> mStorylineCandids;
     // Context
     private Context mContext;
     private View.OnClickListener mItemClickListener;
@@ -33,7 +33,7 @@ public class StorylineAdapter extends RecyclerView.Adapter<StorylineAdapter.Stor
     public StorylineAdapter(Context context, View.OnClickListener itemClickListener) {
         mContext = context;
         mItemClickListener = itemClickListener;
-        mCandids = getTestData();
+        mStorylineCandids = ChatsFragment.getTestData();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class StorylineAdapter extends RecyclerView.Adapter<StorylineAdapter.Stor
 
     @Override
     public void onBindViewHolder(StorylineAdapter.StorylineViewHolder holder, int position) {
-        Candid candid = mCandids.get(position);
+        Candid candid = mStorylineCandids.get(position);
         holder.mCandidImage.setImageResource(candid.getCandidPicture());
         switch (candid.getCandidSource()) {
             case SENT: {
@@ -62,7 +62,7 @@ public class StorylineAdapter extends RecyclerView.Adapter<StorylineAdapter.Stor
 
     @Override
     public int getItemCount() {
-        return mCandids.size();
+        return mStorylineCandids.size();
     }
 
     /**
@@ -78,22 +78,5 @@ public class StorylineAdapter extends RecyclerView.Adapter<StorylineAdapter.Stor
             mCandidSourceIndicator = itemView.findViewById(R.id.chats_storyline_thumbnail_sender_indicator);
             itemView.setOnClickListener(clickListener);
         }
-    }
-
-    /**
-     * Test data
-     */
-    private ArrayList<Candid> getTestData() {
-        ArrayList<Candid> testData = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Candid candid;
-            if (i % 2 == 0) {
-                candid = new Candid(R.drawable.test_friend, Candid.CandidSource.SENT);
-            } else {
-                candid = new Candid(R.drawable.test_sticky_friend, Candid.CandidSource.RECEIVED);
-            }
-            testData.add(candid);
-        }
-        return testData;
     }
 }

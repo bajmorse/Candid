@@ -8,8 +8,7 @@
     <ImageView
         android:id="@+id/chats_storyline_thumbnail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/mediumOrchid" />
+        android:layout_height="match_parent" />
 
     <View
         android:id="@+id/chats_storyline_thumbnail_sender_indicator"
