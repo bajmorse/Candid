@@ -25,14 +25,14 @@
                 android:background="@color/offWhite">
 
                 <ImageView
-                    android:id="@+id/profile_picture"
+                    android:id="@+id/friends_list_profile_picture"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/profile_pic_top_margin"
                     android:layout_marginLeft="@dimen/profile_pick_side_margin"
                     android:layout_marginRight="@dimen/profile_pick_side_margin"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/zelda1" />
+                    android:src="@drawable/zelda" />
 
                 <TextView
                     android:id="@+id/profile_username"
