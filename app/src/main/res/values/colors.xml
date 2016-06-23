@@ -12,6 +12,8 @@
     <color name="green">#ff32d523</color>
     <color name="blue">#ff0000dd</color>
     <color name="purple">#ff6600a2</color>
+    <color name="magenta">#fddf00dd</color>
+    <color name="mediumOrchid">#BA55D3</color>
     <color name="pink">#fff76bc2</color>
     <color name="white">#ffffffff</color>
     <color name="black">#ff000000</color>

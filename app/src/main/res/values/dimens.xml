@@ -26,4 +26,10 @@
     <dimen name="profile_connect_button_size">40dp</dimen>
     <dimen name="profile_connect_button_padding">5dp</dimen>
     <dimen name="profile_connect_button_spacing">65dp</dimen>
+
+    <!-- Connect dimmensions -->
+    <dimen name="sticky_friends_height">130dp</dimen>
+    <dimen name="sticky_friends_item_width">80dp</dimen>
+    <dimen name="friends_list_item_height">135dp</dimen>
+    <dimen name="friends_list_item_width">90dp</dimen>
 </resources>
