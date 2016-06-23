@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,8 +16,11 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 
+import com.app.Chats.ChatsFragment;
 import com.app.CustomViews.AutoFormattingGridView;
 import com.app.R;
+
+import java.io.Serializable;
 
 public class ConnectFragment extends Fragment implements
         AdapterView.OnItemClickListener,
@@ -105,12 +109,33 @@ public class ConnectFragment extends Fragment implements
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.d(TAG, "Selected friend: " + position);
+        // Get friend data for clicked friend
+        Friend friend = (Friend) mFriendsListAdapter.getItem(position);
+
+        // Open chat with that friend
+        openChat(friend);
     }
 
     @Override
     public void onClick(View view) {
-        Log.d(TAG, "Selected sticky friend");
+        // Get friend data for clicked friend
+        Friend friend = (Friend) ((StickyFriendsAdapter) mStickyFriendsAdapter).getItem((Integer) view.getTag());
+
+        // Open chat with that friend
+        openChat(friend);
+    }
+
+    private void openChat(Friend friend) {
+        ChatsFragment friendChatFragment = new ChatsFragment();
+        Bundle friendBundle = new Bundle();
+        friendBundle.putSerializable(ChatsFragment.FRIEND_KEY, (Serializable) friend);
+        friendChatFragment.setArguments(friendBundle);
+
+        // Create fragment transaction
+        FragmentTransaction chatFragmentTransaction = getChildFragmentManager().beginTransaction();
+        chatFragmentTransaction.setCustomAnimations(R.anim.slide_in_from_right, R.anim.slide_out_to_right);
+        chatFragmentTransaction.replace(R.id.connect_fragment, friendChatFragment);
+        chatFragmentTransaction.commit();
     }
 
     /**

@@ -1,0 +1,70 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.app.Chats.ChatsFragment"
+    android:background="@color/colorBackground">
+
+    <RelativeLayout
+        android:id="@+id/chats_friend_information"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/chats_friend_information_height"
+        android:background="@color/offWhite" >
+
+        <ImageView
+            android:id="@+id/chats_profile_picture"
+            android:layout_width="@dimen/chats_friend_profile_picture_width"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/chats_margin" />
+
+        <TextView
+            android:id="@+id/chats_username"
+            android:layout_toRightOf="@id/chats_profile_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/chats_username_height"
+            android:layout_marginTop="@dimen/chats_margin"
+            android:layout_marginLeft="@dimen/chats_large_margin"
+            android:layout_marginStart="@dimen/chats_large_margin"
+            android:gravity="bottom"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:text="Username" />
+
+        <TextView
+            android:id="@+id/chats_candid_count"
+            android:layout_below="@id/chats_username"
+            android:layout_toRightOf="@id/chats_profile_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/chats_candid_count_height"
+            android:layout_marginLeft="@dimen/chats_large_margin"
+            android:layout_marginStart="@dimen/chats_large_margin"
+            android:gravity="top"
+            android:textSize="20sp"
+            android:text="Candids sent: 00" />
+        
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/chats_margin"
+            android:layout_above="@id/chats_candid_count"
+            android:layout_alignLeft="@id/chats_candid_count"
+            android:layout_alignStart="@id/chats_candid_count"
+            android:layout_alignRight="@id/chats_candid_count"
+            android:layout_alignEnd="@id/chats_candid_count"
+            android:background="@color/red" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/chats_comic"
+        android:layout_below="@id/chats_friend_information"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/chats_comic_height"
+        android:padding="@dimen/chats_margin" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/chats_storyline"
+        android:layout_below="@id/chats_comic"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/chats_margin" />
+
+</RelativeLayout>

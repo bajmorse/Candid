@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="@dimen/chats_storyline_item_width"
+    android:layout_height="match_parent"
+    android:layout_marginRight="@dimen/chats_margin" >
+
+    <ImageView
+        android:id="@+id/chats_storyline_thumbnail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <View
+        android:id="@+id/chats_storyline_thumbnail_sender_indicator"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/chats_margin" />
+
+</RelativeLayout>

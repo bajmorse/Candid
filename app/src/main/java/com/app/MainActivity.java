@@ -43,6 +43,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.app.Chats.ChatsFragment;
 import com.app.Connect.ConnectFragment;
 import com.app.NewsFeed.NewsFeedFragment;
 import com.app.Profile.ProfileFragment;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements
         NewsFeedFragment.OnFragmentInteractionListener,
         ProfileFragment.OnFragmentInteractionListener,
         ConnectFragment.OnFragmentInteractionListener,
+        ChatsFragment.OnFragmentInteractionListener,
         TextureView.SurfaceTextureListener {
 
     /**
@@ -277,9 +279,6 @@ public class MainActivity extends AppCompatActivity implements
 
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {}
 
     /**
      * Camera initialization functions
@@ -790,5 +789,15 @@ public class MainActivity extends AppCompatActivity implements
         public CharSequence getPageTitle(int position) {
             return null;
         }
+    }
+
+    /**
+     * Fragment interaction
+     */
+    @Override
+    public void onFragmentInteraction(Uri uri) {}
+
+    @Override
+    public void onChatFragmentOpened() {
     }
 }
