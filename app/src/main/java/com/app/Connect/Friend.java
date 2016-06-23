@@ -3,13 +3,22 @@ package com.app.Connect;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 
-/**
- * Created by brent on 2016-06-22.
- */
-public class Friend {
+import java.io.Serializable;
+
+public class Friend implements Serializable {
+
+    /**
+     * Variables
+     */
+    // Serializable constant
+    private static final long serialVersionUID = 2025;
+    // Friend data
     private String mUsername;
     private int mProfilePic;
 
+    /**
+     * Constructor
+     */
     public Friend(String username, int profilePic) {
         mUsername = username;
         mProfilePic = profilePic;

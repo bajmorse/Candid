@@ -15,8 +15,11 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 
+import com.app.Chats.ChatsFragment;
 import com.app.CustomViews.AutoFormattingGridView;
 import com.app.R;
+
+import java.io.Serializable;
 
 public class ConnectFragment extends Fragment implements
         AdapterView.OnItemClickListener,
@@ -105,7 +108,14 @@ public class ConnectFragment extends Fragment implements
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.d(TAG, "Selected friend: " + position);
+        ChatsFragment friendChatFragment = new ChatsFragment();
+        Bundle friendBundle = new Bundle();
+        Friend friend = (Friend) mFriendsListView.getAdapter().getItem(position);
+        friendBundle.putSerializable(ChatsFragment.FRIEND_KEY, (Serializable) friend);
+        friendChatFragment.setArguments(friendBundle);
+        getChildFragmentManager().beginTransaction().replace(R.id.connect_fragment, friendChatFragment).commit();
+
+        Log.d(TAG, "Selected friend: " + friend.getUsername());
     }
 
     @Override

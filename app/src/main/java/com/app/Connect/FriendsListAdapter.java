@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import com.app.R;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Created by brent on 2016-06-22.
@@ -45,8 +46,7 @@ public class FriendsListAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        Log.d(TAG, "Got item: " + position);
-        return null;
+        return mFriends.get(position);
     }
 
     @Override

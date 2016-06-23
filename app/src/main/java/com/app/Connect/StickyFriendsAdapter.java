@@ -58,6 +58,9 @@ public class StickyFriendsAdapter extends RecyclerView.Adapter<StickyFriendsAdap
         return mStickyFriends.size();
     }
 
+    /**
+     * View holder
+     */
     public static class StickyFriendsViewHolder extends RecyclerView.ViewHolder {
         ImageView mProfilePictureImageView;
 
