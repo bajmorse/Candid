@@ -1,23 +1,31 @@
 package com.app.Chats;
 
 import android.content.Context;
-import android.net.Uri;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
+import com.app.Connect.ConnectFragment;
 import com.app.Connect.Friend;
-import com.app.Connect.StickyFriendsAdapter;
 import com.app.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChatsFragment extends Fragment implements
         View.OnClickListener,
@@ -41,6 +49,11 @@ public class ChatsFragment extends Fragment implements
     private RecyclerView mComic;
     private RecyclerView.LayoutManager mComicLayoutManager;
     private RecyclerView.Adapter mComicAdapter;
+    // Swipe
+    private GestureDetectorCompat mGestureDetector;
+    private Point mTouchPoint;
+    private int mDeltaX;
+    private int mWidth;
 
     /**
      * Lifecycle functions
@@ -53,12 +66,19 @@ public class ChatsFragment extends Fragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mFriend = (Friend) getArguments().getSerializable(FRIEND_KEY);
+        mListener.onChatFragmentOpened();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.chats_fragment, container, false);
         view.setOnTouchListener(this);
+        mGestureDetector = new GestureDetectorCompat(getContext(), new ChatsGestureListener());
+
+        // Get width
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        mWidth = metrics.widthPixels;
 
         // Update profile picture
         ImageView friendProfilePicture = (ImageView) view.findViewById(R.id.chats_profile_picture);
@@ -98,6 +118,13 @@ public class ChatsFragment extends Fragment implements
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "Fragment Destroyed");
+        mListener.onChatFragmentClosed();
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
@@ -123,9 +150,69 @@ public class ChatsFragment extends Fragment implements
     }
 
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        Log.d(TAG, "Touched!");
+    public boolean onTouch(final View view, MotionEvent event) {
+        mGestureDetector.onTouchEvent(event);
+        final int x = (int) event.getRawX();
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN: {
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
+                mDeltaX = x - layoutParams.leftMargin;
+                break;
+            }
+            case MotionEvent.ACTION_MOVE: {
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
+                int leftMargin = x - mDeltaX;
+                if (leftMargin < 0) {
+                    leftMargin = 0;
+                    if (layoutParams.leftMargin == 0) {
+                        return false;
+                    }
+                }
+                layoutParams.leftMargin = leftMargin;
+                layoutParams.rightMargin = -leftMargin;
+                view.setLayoutParams(layoutParams);
+                break;
+            }
+            case MotionEvent.ACTION_UP: {
+                final int startLeftMargin = ((RelativeLayout.LayoutParams) view.getLayoutParams()).leftMargin;
+                if (startLeftMargin <= 0) break;
+
+                Log.d(TAG, "Start margin: " + startLeftMargin + "     Width: " + mWidth);
+
+                Animation animation;
+                int duration;
+                if (startLeftMargin > mWidth/2) {
+                    getParentFragment().getChildFragmentManager().popBackStack();
+                    break;
+                } else {
+                    duration = (int) (25 * Math.log(startLeftMargin));
+                    animation = new Animation() {
+
+                        @Override
+                        protected void applyTransformation(float interpolatedTime, Transformation t) {
+                            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
+                            layoutParams.leftMargin = (int) (startLeftMargin - (startLeftMargin * interpolatedTime));
+                            view.setLayoutParams(layoutParams);
+                        }
+                    };
+                }
+                animation.setDuration(duration);
+                view.startAnimation(animation);
+                break;
+            }
+        }
         return true;
+    }
+
+    /**
+     * Gesture detector
+     */
+    private class ChatsGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            getParentFragment().getChildFragmentManager().popBackStack();
+            return true;
+        }
     }
 
     /**
@@ -133,6 +220,7 @@ public class ChatsFragment extends Fragment implements
      */
     public interface OnFragmentInteractionListener {
         void onChatFragmentOpened();
+        void onChatFragmentClosed();
     }
 
     /**

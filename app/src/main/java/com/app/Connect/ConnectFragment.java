@@ -130,11 +130,13 @@ public class ConnectFragment extends Fragment implements
         Bundle friendBundle = new Bundle();
         friendBundle.putSerializable(ChatsFragment.FRIEND_KEY, (Serializable) friend);
         friendChatFragment.setArguments(friendBundle);
+        String chatFragmentTag = ChatsFragment.class.getName();
 
         // Create fragment transaction
         FragmentTransaction chatFragmentTransaction = getChildFragmentManager().beginTransaction();
-        chatFragmentTransaction.setCustomAnimations(R.anim.slide_in_from_right, R.anim.slide_out_to_right);
+        chatFragmentTransaction.setCustomAnimations(R.anim.slide_in_from_right, R.anim.slide_out_to_right, R.anim.slide_in_from_right, R.anim.slide_out_to_right);
         chatFragmentTransaction.replace(R.id.connect_fragment, friendChatFragment);
+        chatFragmentTransaction.addToBackStack(chatFragmentTag);
         chatFragmentTransaction.commit();
     }
 
