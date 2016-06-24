@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements
     // Adapter for the tab sections at the top
     private SectionsPagerAdapter mSectionsPagerAdapter;
     // The view pager that will hold the tabs
-    private ViewPager mViewPager;
+    private CandidViewPager mViewPager;
     // The tab layout to display the sections
     private TabLayout mTabLayout;
 
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = (CandidViewPager) findViewById(R.id.container);
         if (mViewPager != null) {
             mViewPager.setAdapter(mSectionsPagerAdapter);
         }
@@ -799,5 +799,24 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onChatFragmentOpened() {
+        mViewPager.setSwipeEnabled(false);
+    }
+
+    @Override
+    public void onChatFragmentClosed() {
+        mViewPager.setSwipeEnabled(true);
+    }
+
+    @Override
+    public void onBackPressed() {
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment.getClass().getName() == ConnectFragment.class.getName()
+                    && fragment.getChildFragmentManager().getBackStackEntryCount() > 0) {
+                fragment.getChildFragmentManager().popBackStack();
+                return;
+            }
+        }
+        super.onBackPressed();
     }
 }
