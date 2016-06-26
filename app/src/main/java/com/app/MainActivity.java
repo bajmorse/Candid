@@ -1,6 +1,8 @@
 package com.app;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -26,12 +28,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Size;
@@ -41,14 +43,14 @@ import android.view.MenuItem;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.app.Chats.ChatsFragment;
 import com.app.Connect.ConnectFragment;
 import com.app.NewsFeed.NewsFeedFragment;
 import com.app.Profile.ProfileFragment;
-import com.app._TestingFragments.HorizontalScrollTestFragment;
-import com.app.CustomViews.AutoResizeTextureView;
 import com.app.Utils.CandidUtils;
 
 import java.io.File;
@@ -58,7 +60,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Semaphore;
@@ -78,11 +79,13 @@ public class MainActivity extends AppCompatActivity implements
     // Logger tag
     private final static String TAG = "MainActivity";
     // Adapter for the tab sections at the top
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private CandidTabsPagerAdapter mCandidTabsPagerAdapter;
     // The view pager that will hold the tabs
     private CandidViewPager mViewPager;
     // The tab layout to display the sections
     private TabLayout mTabLayout;
+    private AppBarLayout mAppBar;
+    private int mViewPagerPadding = 0, mStatusBarHeight = 0;
 
     /**
      * Camera variables
@@ -107,11 +110,12 @@ public class MainActivity extends AppCompatActivity implements
     private static final int STATE_WAITING_NON_PRECAPTURE = 3;
     private static final int STATE_PICTURE_TAKEN = 4;
     private int mState = STATE_PREVIEW;
+    private boolean mCameraOpen = false;
     // Camera Constants
     private static final int MAX_PREVIEW_WIDTH = 1920;
     private static final int MAX_PREVIEW_HEIGHT = 1080;
     // Camera
-    private AutoResizeTextureView mCameraTextureView;
+    private TextureView mCameraTextureView;
     private Surface mRawCaptureSurface, mJpegCaptureSurface, mPreviewSurface;
     private Size mPreviewSize;
     private String mCameraId;
@@ -146,15 +150,19 @@ public class MainActivity extends AppCompatActivity implements
 
         // Set content view for activity
         setContentView(R.layout.activity_main);
+        getWindow().setStatusBarColor(getResources().getColor(R.color.transparent));
+
+        // Get the app bar
+        mAppBar = (AppBarLayout) findViewById(R.id.appbar);
 
         // Create the adapter that will return the proper fragment for each of the three
         // tabs in the pager
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mCandidTabsPagerAdapter = new CandidTabsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter
         mViewPager = (CandidViewPager) findViewById(R.id.container);
         if (mViewPager != null) {
-            mViewPager.setAdapter(mSectionsPagerAdapter);
+            mViewPager.setAdapter(mCandidTabsPagerAdapter);
         }
 
         // Set up the TabLayout with the view pager
@@ -164,8 +172,19 @@ public class MainActivity extends AppCompatActivity implements
         }
         setupTabLayout();
 
+        // Get view sizes
+        mTabLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            @Override
+            public void onGlobalLayout() {
+                mViewPagerPadding = mTabLayout.getHeight() + mAppBar.getPaddingTop();
+                mViewPager.setPadding(0, mViewPagerPadding, 0, 0);
+                mTabLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+
         // Setup camera view
-        mCameraTextureView = (AutoResizeTextureView) findViewById(R.id.camera_background);
+        mCameraTextureView = (TextureView) findViewById(R.id.camera_background);
         if (mCameraTextureView != null) {
             mCameraTextureView.setSurfaceTextureListener(this);
         } else {
@@ -174,16 +193,16 @@ public class MainActivity extends AppCompatActivity implements
 
         // Setup photo button
         ImageView takePhotoButton = (ImageView) findViewById(R.id.take_photo_button);
-        if (takePhotoButton != null) {
-            takePhotoButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    capture();
-                }
-            });
-        } else {
-            Log.e(TAG, "Can't find take photo button.");
-        }
+//        if (takePhotoButton != null) {
+//            takePhotoButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    capture();
+//                }
+//            });
+//        } else {
+//            Log.e(TAG, "Can't find take photo button.");
+//        }
 
         // Check permissions
         boolean hasCameraPermissions = (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED);
@@ -215,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements
     private void setupTabLayout() {
         mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         mTabLayout.setSelectedTabIndicatorHeight(0);
+        mTabLayout.setPadding(0, getStatusBarHeight(), 0, 0);
 
         TabLayout.Tab leftTab = mTabLayout.getTabAt(0);
         if (leftTab != null) {
@@ -242,19 +262,26 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    private int getStatusBarHeight() {
+        if (mStatusBarHeight == 0) {
+            int statusBarHeight = 0;
+            int statusBarHeightResource = getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (statusBarHeightResource > 0) statusBarHeight = getResources().getDimensionPixelSize(statusBarHeightResource);
+            mStatusBarHeight = statusBarHeight;
+        }
+        return mStatusBarHeight;
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-        startBackgroundThread();
-//        if (mPreviewSurface != null) {
-//            openCamera(mCameraTextureView.getWidth(), mCameraTextureView.getHeight());
-//        }
+//        startBackgroundThread();
     }
 
     @Override
     public void onPause() {
-        closeCamera();
-        stopBackgroundThread();
+//        closeCamera();
+//        stopBackgroundThread();
         super.onPause();
     }
 
@@ -559,7 +586,7 @@ public class MainActivity extends AppCompatActivity implements
                 if (!cameraPermissionGranted) {
                     CandidUtils.ErrorDialog.newInstance("Did not receive camera permissions").show(getSupportFragmentManager(), "dialog");
                 } else {
-                    openCamera(mCameraTextureView.getWidth(), mCameraTextureView.getHeight());
+//                    openCamera(mCameraTextureView.getWidth(), mCameraTextureView.getHeight());
                 }
                 break;
             }
@@ -576,12 +603,12 @@ public class MainActivity extends AppCompatActivity implements
         Log.d(TAG, "Surface Texture Available");
 
         mPreviewSurface = new Surface(surface);
-        openCamera(width, height);
+//        openCamera(width, height);
     }
 
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-        configureTransform(width, height);
+//        configureTransform(width, height);
     }
 
     @Override
@@ -589,7 +616,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-        closeCamera();
+//        closeCamera();
         return true;
     }
 
@@ -750,17 +777,17 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * SectionsPagerAdapter
+     * CandidTabsPagerAdapter
      * Handles paging for the tab sections
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    private class CandidTabsPagerAdapter extends FragmentPagerAdapter {
 
         public final static int PROFILE_TAB = 0;
         public final static int MAIN_TAB = 1;
         public final static int CONNECT_TAB = 2;
 
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
+        public CandidTabsPagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
         }
 
         @Override
@@ -808,13 +835,70 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void showCamera() {
+        // Hide app bar
+        mAppBar.animate().y(-mAppBar.getHeight()).setStartDelay(0).setDuration(500).start();
+
+        // Resize view pager
+        ValueAnimator animator = ValueAnimator.ofInt(mViewPager.getPaddingTop(), -mViewPagerPadding);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mViewPager.setPadding(0, Integer.parseInt(animation.getAnimatedValue().toString()), 0, 0);
+            }
+        });
+        animator.setDuration(770);
+        animator.start();
+
+        // Hide status bar
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        // Set camera as opened
+        mCameraOpen = true;
+    }
+
+    private void hideCamera() {
+        // Show app bar
+        mAppBar.animate().y(0).setStartDelay(270).setDuration(500).start();
+
+        // Resize view pager
+        ValueAnimator animator = ValueAnimator.ofInt(mViewPager.getPaddingTop(), mViewPagerPadding);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mViewPager.setPadding(0, Integer.parseInt(animation.getAnimatedValue().toString()), 0, 0);
+            }
+        });
+        animator.setDuration(770);
+        animator.start();
+
+        // Show status bar
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        // Set camera as closed
+        mCameraOpen = false;
+    }
+
+    /**
+     * Back button
+     */
+    @Override
     public void onBackPressed() {
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
-            if (fragment.getClass().getName() == ConnectFragment.class.getName()
-                    && fragment.getChildFragmentManager().getBackStackEntryCount() > 0) {
-                fragment.getChildFragmentManager().popBackStack();
-                return;
+            String fragmentClassName = fragment.getClass().getName();
+            if (Objects.equals(fragmentClassName, ConnectFragment.class.getName())) {
+                FragmentManager fragmentManager = fragment.getChildFragmentManager();
+                if (fragmentManager.getBackStackEntryCount() > 0) {
+                    fragmentManager.popBackStack();
+                    return;
+                }
+            } else if (Objects.equals(fragmentClassName, NewsFeedFragment.class.getName())) {
+                if (mCameraOpen) {
+                    hideCamera();
+                    ((NewsFeedFragment) fragment).hideCamera();
+                    return;
+                }
             }
         }
         super.onBackPressed();

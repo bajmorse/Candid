@@ -17,6 +17,7 @@
     <color name="pink">#fff76bc2</color>
     <color name="white">#ffffffff</color>
     <color name="black">#ff000000</color>
+    <color name="transparent">#00000000</color>
 
     <!-- Generic colors -->
     <color name="offWhite">#dddddd</color>

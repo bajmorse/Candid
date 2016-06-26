@@ -1,13 +1,72 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
     tools:context=".NewsFeed.NewsFeedFragment">
 
+    <RelativeLayout
+        android:id="@+id/news_feed_header_top"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@color/colorBackground" >
+
+        <TextView
+            android:id="@+id/score"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            android:textColor="@color/offBlack"
+            android:text="Score"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/friends"
+            android:gravity="end"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            android:textColor="@color/offBlack"
+            android:text="Friends"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/news_feed"
+        android:layout_below="@id/news_feed_header_top"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/news_feed_fragment_username"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/news_feed_header_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="0dp"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:layout_marginTop="3dp"
+        android:textStyle="bold"
+        android:textSize="22sp"
+        android:textColor="@android:color/black"
+        android:text="Username"
+        android:background="@drawable/username_rounded_corner"
+        android:shadowColor="@color/shadowColor"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="3"/>
+
+    <ImageView
+        android:id="@+id/news_feed_fragment_camera_button"
+        android:layout_below="@id/news_feed_fragment_username"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:scaleType="fitCenter"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/camera_take_picture_button"/>
+
+</RelativeLayout>

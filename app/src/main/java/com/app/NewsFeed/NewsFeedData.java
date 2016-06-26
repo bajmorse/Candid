@@ -19,33 +19,21 @@ public class NewsFeedData {
     // Constants
     private final int MAX_TIME = 15;
     // Variables
-    private Drawable mPicture;
+    private int mPictureId;
     private String mUsername;
     private String mCaption;
     private int mTimeLeft;
     private int mScore;
 
-    public NewsFeedData() {
-        mPicture = null;
-        mUsername = null;
-        mCaption = null;
-        mTimeLeft = MAX_TIME;
-        mScore = 0;
-    }
-
-    public NewsFeedData(Drawable picture) {
-        mPicture = picture;
-        mUsername = null;
-        mCaption = null;
-        mTimeLeft = MAX_TIME;
-        mScore = 0;
+    public NewsFeedData(int pictureId) {
+        mPictureId = pictureId;
     }
 
     /**
      * Getters
      */
-    public Drawable getPicture() {
-        return mPicture;
+    public int getPictureId() {
+        return mPictureId;
     }
 
     public String getUsername() {
@@ -67,8 +55,8 @@ public class NewsFeedData {
     /**
      * Setters
      */
-    public void setPicture(Drawable picture) {
-        mPicture = picture;
+    public void setPictureId(int pictureId) {
+        mPictureId = pictureId;
     }
 
     public void setUsername(String username) {
@@ -77,18 +65,5 @@ public class NewsFeedData {
 
     public void setCaption(String caption) {
         mCaption = caption;
-    }
-
-    /**
-     * Test Data
-     */
-    public static ArrayList<NewsFeedData> getTestData() {
-        ArrayList<NewsFeedData> testData = new ArrayList<NewsFeedData>();
-        for (int i = 0; i < 10; i++) {
-            NewsFeedData data = new NewsFeedData();
-            data.setCaption("Caption");
-            testData.add(data);
-        }
-        return testData;
     }
 }

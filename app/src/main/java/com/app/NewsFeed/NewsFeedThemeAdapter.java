@@ -13,16 +13,17 @@ import android.widget.TextView;
 import com.app.R;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class NewsFeedThemeAdapter extends RecyclerView.Adapter<NewsFeedThemeAdapter.NewsFeedThemeViewHolder> {
 
     public static Theme[] THEMES = {Theme.NIGHTLIFE, Theme.SCENERY, Theme.SELFIE, Theme.STAR, Theme.HOT};
     public enum Theme {
-        NIGHTLIFE("Nightlife", R.color.nightlifeThemeColor, R.color.nightlifeThemeColorTranslucent),
-        SCENERY("Scenery", R.color.sceneryThemeColor, R.color.sceneryThemeColorTranslucent),
-        SELFIE("Selfie", R.color.selfieThemeColor, R.color.selfieThemeColorTranslucent),
-        STAR("Star", R.color.starThemeColor, R.color.starThemeColorTranslucent),
-        HOT("Hot", R.color.hotThemeColor, R.color.hotThemeColorTranslucent);
+        NIGHTLIFE("nightlife", R.color.nightlifeThemeColor, R.color.nightlifeThemeColorTranslucent),
+        SCENERY("scenery", R.color.sceneryThemeColor, R.color.sceneryThemeColorTranslucent),
+        SELFIE("selfie", R.color.selfieThemeColor, R.color.selfieThemeColorTranslucent),
+        STAR("star", R.color.starThemeColor, R.color.starThemeColorTranslucent),
+        HOT("hot", R.color.hotThemeColor, R.color.hotThemeColorTranslucent);
 
         private String mThemeTitle;
         private int mColor;
@@ -62,10 +63,10 @@ public class NewsFeedThemeAdapter extends RecyclerView.Adapter<NewsFeedThemeAdap
     /**
      * Constructor
      */
-    public NewsFeedThemeAdapter(Context context, Theme theme, ArrayList<NewsFeedData> dataset) {
+    public NewsFeedThemeAdapter(Context context, Theme theme) {
         mContext = context;
         mTheme = theme;
-        mDataset = dataset;
+        mDataset = getTestData(theme, context);
     }
 
     /**
@@ -82,7 +83,21 @@ public class NewsFeedThemeAdapter extends RecyclerView.Adapter<NewsFeedThemeAdap
 
     @Override
     public void onBindViewHolder(NewsFeedThemeViewHolder holder, int position) {
-        holder.mCandidImageView.setBackgroundColor(mTheme.getColor());
+        holder.mCandidImageView.setImageResource(mDataset.get(position).getPictureId());
+
+//        Random rng = new Random();
+//        int heartNumber = rng.nextInt(7);
+//        int heartResource;
+//        switch (heartNumber) {
+//            case 0: heartResource = R.drawable.candid_purpleheartwithstars; break;
+//            case 1: heartResource = R.drawable.candid_goldheart; break;
+//            case 2: heartResource = R.drawable.candid_redheart; break;
+//            case 3: heartResource = R.drawable.candid_greenheart; break;
+//            case 4: heartResource = R.drawable.candid_blueheart; break;
+//            case 5: heartResource = R.drawable.candid_greyheart; break;
+//            case 6:default: heartResource = R.drawable.candid_brokenheart;
+//        }
+//        holder.mCandidHeartView.setImageResource(heartResource);
     }
 
     /**
@@ -109,11 +124,13 @@ public class NewsFeedThemeAdapter extends RecyclerView.Adapter<NewsFeedThemeAdap
     public static class NewsFeedThemeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ImageView mCandidImageView;
         public TextView mCaptionTextView;
+        public ImageView mCandidHeartView;
 
         public NewsFeedThemeViewHolder(View itemView) {
             super(itemView);
             mCandidImageView = (ImageView) itemView.findViewById(R.id.news_feed_candid_image_view);
             mCaptionTextView = (TextView) itemView.findViewById(R.id.news_feed_caption_text_view);
+            mCandidHeartView = (ImageView) itemView.findViewById(R.id.news_feed_candid_heart);
             itemView.setOnClickListener(this);
         }
 
@@ -121,5 +138,20 @@ public class NewsFeedThemeAdapter extends RecyclerView.Adapter<NewsFeedThemeAdap
         public void onClick(View v) {
             Log.d(TAG, "Clicked item");
         }
+    }
+
+    /**
+     * Test Data
+     */
+    public static ArrayList<NewsFeedData> getTestData(Theme theme, Context context) {
+        ArrayList<NewsFeedData> testData = new ArrayList<NewsFeedData>();
+        for (int i = 0; i < 10; i++) {
+            String testPhoto = "theme_" + theme.toString() + "_example";
+            int testPhotoResource = context.getResources().getIdentifier(testPhoto, "drawable", context.getPackageName());
+            NewsFeedData data = new NewsFeedData(testPhotoResource);
+            data.setCaption("Caption");
+            testData.add(data);
+        }
+        return testData;
     }
 }

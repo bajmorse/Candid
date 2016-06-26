@@ -19,7 +19,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:screenOrientation="portrait"
+        android:theme="@style/AppTheme.NoActionBar">
 
         <!-- API keys -->
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id" />
@@ -27,14 +28,12 @@
 
         <activity
             android:name=".Login.LoginActivity"
-            android:label="@string/app_name"
+            android:label="@string/app_name_login"
             android:noHistory="true">
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
