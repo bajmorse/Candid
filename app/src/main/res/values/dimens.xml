@@ -4,16 +4,18 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
+    <dimen name="tab_layout_height">48dp</dimen>
 
     <!-- News feed dimensions -->
+    <dimen name="news_feed_header_height">95dp</dimen>
     <dimen name="news_feed_item_padding">15dp</dimen>
     <dimen name="news_feed_theme_button_padding">5dp</dimen>
 
     <!-- Horizontal news feed dimensions -->
+    <dimen name="news_feed_theme_padding">3dp</dimen>
     <dimen name="horizontal_news_feed_height">140dp</dimen>
-    <dimen name="horizontal_news_feed_item_height">120dp</dimen>
-    <dimen name="horizontal_news_feed_item_width">70dp</dimen>
-    <dimen name="horizontal_news_feed_item_margin">10dp</dimen>
+    <dimen name="horizontal_news_feed_item_width">85dp</dimen>
+    <dimen name="horizontal_news_feed_item_margin">3dp</dimen>
 
     <!-- Profile dimensions -->
     <dimen name="map_height">125dp</dimen>

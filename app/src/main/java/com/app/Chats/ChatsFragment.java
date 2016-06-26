@@ -210,8 +210,11 @@ public class ChatsFragment extends Fragment implements
     private class ChatsGestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            getParentFragment().getChildFragmentManager().popBackStack();
-            return true;
+            if (velocityX > 0) {
+                getParentFragment().getChildFragmentManager().popBackStack();
+                return true;
+            }
+            return false;
         }
     }
 

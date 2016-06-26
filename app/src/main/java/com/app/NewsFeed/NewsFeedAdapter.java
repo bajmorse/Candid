@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.app.R;
 
@@ -51,20 +52,19 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof NewsFeedHeaderViewHolder) {
-            NewsFeedHeaderViewHolder viewHolder = (NewsFeedHeaderViewHolder) holder;
         } else if (holder instanceof NewsFeedViewHolder) {
             NewsFeedViewHolder viewHolder = (NewsFeedViewHolder) holder;
 
             // Set theme color
-            int themeColor = NewsFeedThemeAdapter.THEMES[position-1].getColor();
-            viewHolder.mNewsFeedTheme.setBackgroundColor(mContext.getResources().getColor(themeColor));
+//            int themeColor = NewsFeedThemeAdapter.THEMES[position-1].getTransparentColor();
+//            viewHolder.mNewsFeedTheme.setBackgroundColor(mContext.getResources().getColor(themeColor));
 
             // Setup layout manager
             viewHolder.mNewsFeedThemeLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
             viewHolder.mNewsFeedTheme.setLayoutManager(viewHolder.mNewsFeedThemeLayoutManager);
 
             // Setup adapter
-            viewHolder.mNewsFeedThemeAdapter = new NewsFeedThemeAdapter(mContext, NewsFeedThemeAdapter.THEMES[position-1], NewsFeedData.getTestData());
+            viewHolder.mNewsFeedThemeAdapter = new NewsFeedThemeAdapter(mContext, NewsFeedThemeAdapter.THEMES[position-1]);
             viewHolder.mNewsFeedTheme.setAdapter(viewHolder.mNewsFeedThemeAdapter);
         }
     }
@@ -85,9 +85,9 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      * View holders
      */
     public static class NewsFeedViewHolder extends RecyclerView.ViewHolder {
-        public RecyclerView mNewsFeedTheme;
-        private RecyclerView.Adapter mNewsFeedThemeAdapter;
-        private RecyclerView.LayoutManager mNewsFeedThemeLayoutManager;
+        RecyclerView mNewsFeedTheme;
+        RecyclerView.Adapter mNewsFeedThemeAdapter;
+        RecyclerView.LayoutManager mNewsFeedThemeLayoutManager;
 
         public NewsFeedViewHolder(View itemView) {
             super(itemView);

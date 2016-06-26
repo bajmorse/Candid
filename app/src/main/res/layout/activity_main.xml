@@ -5,15 +5,14 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context="com.app.MainActivity">
+    tools:context="com.app.MainActivity"
+    android:background="@color/offBlack" >
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/appbar_padding_top"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:paddingTop="@dimen/appbar_padding_top">
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
@@ -22,7 +21,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <com.app.CustomViews.AutoResizeTextureView
+    <TextureView
         android:id="@+id/camera_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -30,7 +29,6 @@
     <com.app.CandidViewPager
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_height="match_parent" />
 
 </android.support.design.widget.CoordinatorLayout>
