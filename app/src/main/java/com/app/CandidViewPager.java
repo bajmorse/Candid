@@ -7,9 +7,6 @@ import android.view.MotionEvent;
 
 import java.util.AbstractSet;
 
-/**
- * Created by brent on 2016-06-23.
- */
 public class CandidViewPager extends ViewPager {
 
     /**

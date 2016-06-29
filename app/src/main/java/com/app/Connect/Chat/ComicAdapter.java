@@ -1,4 +1,4 @@
-package com.app.Chats;
+package com.app.Connect.Chat;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -23,7 +23,7 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ComicViewHol
     // Logging tag
     public static final String TAG = "COMIC_ADAPTER";
     // Data
-    ArrayList<Candid> mComicCandids;
+    ArrayList<PrivateCandid> mComicCandids;
     // Context
     private Context mContext;
     private View.OnClickListener mItemClickListener;
@@ -37,7 +37,7 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ComicViewHol
     public ComicAdapter(Context context, View.OnClickListener clickListener) {
         mContext = context;
         mItemClickListener = clickListener;
-        mComicCandids = ChatsFragment.getTestData();
+        mComicCandids = ChatFragment.getTestData();
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ComicViewHol
 
     @Override
     public void onBindViewHolder(ComicViewHolder holder, int position) {
-        Candid candid = mComicCandids.get(position);
+        PrivateCandid candid = mComicCandids.get(position);
         holder.mCandidImage.setImageResource(candid.getCandidPicture());
         holder.mCandidCaption.setText(candid.getCandidCaption());
     }

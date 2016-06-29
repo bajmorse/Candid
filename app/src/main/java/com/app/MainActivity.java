@@ -22,7 +22,6 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -47,7 +46,6 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.app.Chats.ChatsFragment;
 import com.app.Connect.ConnectFragment;
 import com.app.NewsFeed.NewsFeedFragment;
 import com.app.Profile.ProfileFragment;
@@ -67,10 +65,7 @@ import java.util.concurrent.TimeUnit;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class MainActivity extends AppCompatActivity implements
-        NewsFeedFragment.OnFragmentInteractionListener,
-        ProfileFragment.OnFragmentInteractionListener,
-        ConnectFragment.OnFragmentInteractionListener,
-        ChatsFragment.OnFragmentInteractionListener,
+        OnFragmentInteractionListener,
         TextureView.SurfaceTextureListener {
 
     /**
@@ -111,12 +106,9 @@ public class MainActivity extends AppCompatActivity implements
     private static final int STATE_PICTURE_TAKEN = 4;
     private int mState = STATE_PREVIEW;
     private boolean mCameraOpen = false;
-    // Camera Constants
-    private static final int MAX_PREVIEW_WIDTH = 1920;
-    private static final int MAX_PREVIEW_HEIGHT = 1080;
     // Camera
     private TextureView mCameraTextureView;
-    private Surface mRawCaptureSurface, mJpegCaptureSurface, mPreviewSurface;
+    private Surface mJpegCaptureSurface, mPreviewSurface;
     private Size mPreviewSize;
     private String mCameraId;
     private CameraDevice mCameraDevice;
@@ -124,9 +116,7 @@ public class MainActivity extends AppCompatActivity implements
     private CaptureResult mCaptureResult;
     private CaptureRequest mPreviewRequest;
     private CameraCharacteristics mCameraCharacteristics;
-    private Integer mCameraFacing = CameraCharacteristics.LENS_FACING_BACK;
     private File mPhotoDir;
-    private int mImageFormat;
     private int mSensorOrientation;
     private ImageReader mImageReader;
     private CaptureRequest.Builder mCaptureBuilder, mPreviewBuilder;
@@ -192,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         // Setup photo button
-        ImageView takePhotoButton = (ImageView) findViewById(R.id.take_photo_button);
+//        ImageView takePhotoButton = (ImageView) findViewById(R.id.take_photo_button);
 //        if (takePhotoButton != null) {
 //            takePhotoButton.setOnClickListener(new View.OnClickListener() {
 //                @Override
@@ -226,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements
         File picturesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         mPhotoDir = new File(picturesDir.getAbsolutePath() + '/' + getString(R.string.app_name));
         if (!mPhotoDir.exists()) {
-            Log.d(TAG, "Candid photo directory doesn't exist. Creating " + mPhotoDir.getAbsolutePath() + " now.");
+            Log.d(TAG, "PrivateCandid photo directory doesn't exist. Creating " + mPhotoDir.getAbsolutePath() + " now.");
             mPhotoDir.mkdirs();
         }
     }
@@ -318,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements
             String[] cameraIds = cameraManager.getCameraIdList();
             for (String id : cameraIds) {
                 CameraCharacteristics cameraCharacteristics = cameraManager.getCameraCharacteristics(id);
-                if (Objects.equals(cameraCharacteristics.get(CameraCharacteristics.LENS_FACING), mCameraFacing)) {
+                if (Objects.equals(cameraCharacteristics.get(CameraCharacteristics.LENS_FACING), CameraCharacteristics.LENS_FACING_BACK)) {
                     mCameraId = id;
                     mCameraCharacteristics = cameraCharacteristics;
                 }
@@ -340,7 +330,6 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
             if (supportsJpeg) {
-                mImageFormat = ImageFormat.JPEG;
             } else
                 throw new CameraAccessException(CameraAccessException.CAMERA_ERROR, "Couldn't find a supported image type");
 
@@ -777,6 +766,65 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
+     * Show/hide camera functions
+     */
+    public void showCamera() {
+        // Hide app bar
+        mAppBar.animate().y(-mAppBar.getHeight()).setStartDelay(0).setDuration(500).start();
+
+        // Resize view pager
+        ValueAnimator animator = ValueAnimator.ofInt(mViewPager.getPaddingTop(), -mViewPagerPadding);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mViewPager.setPadding(0, Integer.parseInt(animation.getAnimatedValue().toString()), 0, 0);
+            }
+        });
+        animator.setDuration(770);
+        animator.start();
+
+        // Hide status bar
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        // Set camera as opened
+        mCameraOpen = true;
+    }
+
+    private void hideCamera() {
+        // Show app bar
+        mAppBar.animate().y(0).setStartDelay(270).setDuration(500).setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {}
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // Show status bar
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {}
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {}
+        }).start();
+
+        // Resize view pager
+        ValueAnimator animator = ValueAnimator.ofInt(mViewPager.getPaddingTop(), mViewPagerPadding);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mViewPager.setPadding(0, Integer.parseInt(animation.getAnimatedValue().toString()), 0, 0);
+            }
+        });
+        animator.setDuration(770);
+        animator.start();
+
+        // Set camera as closed
+        mCameraOpen = false;
+    }
+
+    /**
      * CandidTabsPagerAdapter
      * Handles paging for the tab sections
      */
@@ -822,61 +870,20 @@ public class MainActivity extends AppCompatActivity implements
      * Fragment interaction
      */
     @Override
-    public void onFragmentInteraction(Uri uri) {}
-
-    @Override
-    public void onChatFragmentOpened() {
+    public void onFragmentOpened() {
         mViewPager.setSwipeEnabled(false);
     }
 
     @Override
-    public void onChatFragmentClosed() {
-        mViewPager.setSwipeEnabled(true);
+    public void onFragmentAction(String action) {
+        if (Objects.equals(action, NewsFeedFragment.OPEN_CAMERA_ACTION)) {
+            showCamera();
+        }
     }
 
     @Override
-    public void showCamera() {
-        // Hide app bar
-        mAppBar.animate().y(-mAppBar.getHeight()).setStartDelay(0).setDuration(500).start();
-
-        // Resize view pager
-        ValueAnimator animator = ValueAnimator.ofInt(mViewPager.getPaddingTop(), -mViewPagerPadding);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mViewPager.setPadding(0, Integer.parseInt(animation.getAnimatedValue().toString()), 0, 0);
-            }
-        });
-        animator.setDuration(770);
-        animator.start();
-
-        // Hide status bar
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        // Set camera as opened
-        mCameraOpen = true;
-    }
-
-    private void hideCamera() {
-        // Show app bar
-        mAppBar.animate().y(0).setStartDelay(270).setDuration(500).start();
-
-        // Resize view pager
-        ValueAnimator animator = ValueAnimator.ofInt(mViewPager.getPaddingTop(), mViewPagerPadding);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mViewPager.setPadding(0, Integer.parseInt(animation.getAnimatedValue().toString()), 0, 0);
-            }
-        });
-        animator.setDuration(770);
-        animator.start();
-
-        // Show status bar
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        // Set camera as closed
-        mCameraOpen = false;
+    public void onFragmentClosed() {
+        mViewPager.setSwipeEnabled(true);
     }
 
     /**
@@ -884,23 +891,16 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void onBackPressed() {
-        List<Fragment> fragments = getSupportFragmentManager().getFragments();
-        for (Fragment fragment : fragments) {
-            String fragmentClassName = fragment.getClass().getName();
-            if (Objects.equals(fragmentClassName, ConnectFragment.class.getName())) {
-                FragmentManager fragmentManager = fragment.getChildFragmentManager();
-                if (fragmentManager.getBackStackEntryCount() > 0) {
-                    fragmentManager.popBackStack();
-                    return;
-                }
-            } else if (Objects.equals(fragmentClassName, NewsFeedFragment.class.getName())) {
-                if (mCameraOpen) {
-                    hideCamera();
-                    ((NewsFeedFragment) fragment).hideCamera();
-                    return;
-                }
-            }
+        Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
+        FragmentManager currentFragmentManager = currentFragment.getChildFragmentManager();
+
+        if (currentFragmentManager.getBackStackEntryCount() > 0) {
+            currentFragmentManager.popBackStack();
+        } else if ((currentFragment.getClass() == NewsFeedFragment.class) && mCameraOpen) {
+            hideCamera();
+            ((NewsFeedFragment) currentFragment).hideCamera();
+        } else {
+            super.onBackPressed();
         }
-        super.onBackPressed();
     }
 }

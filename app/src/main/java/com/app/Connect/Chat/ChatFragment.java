@@ -1,7 +1,6 @@
-package com.app.Chats;
+package com.app.Connect.Chat;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
@@ -13,21 +12,17 @@ import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
-import com.app.Connect.ConnectFragment;
 import com.app.Connect.Friend;
+import com.app.OnFragmentInteractionListener;
 import com.app.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class ChatsFragment extends Fragment implements
+public class ChatFragment extends Fragment implements
         View.OnClickListener,
         View.OnTouchListener {
 
@@ -35,7 +30,7 @@ public class ChatsFragment extends Fragment implements
      * Variables
      */
     // Logging tag
-    public static final String TAG = "CHATS_FRAG";
+    public static final String TAG = "CHAT_FRAG";
     // Fragment listener
     private OnFragmentInteractionListener mListener;
     // Friend's data
@@ -51,22 +46,21 @@ public class ChatsFragment extends Fragment implements
     private RecyclerView.Adapter mComicAdapter;
     // Swipe
     private GestureDetectorCompat mGestureDetector;
-    private Point mTouchPoint;
-    private int mDeltaX;
+    private float mLastX;
     private int mWidth;
 
     /**
      * Lifecycle functions
      */
-    public static ChatsFragment newInstance() {
-        return new ChatsFragment();
+    public static ChatFragment newInstance() {
+        return new ChatFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mFriend = (Friend) getArguments().getSerializable(FRIEND_KEY);
-        mListener.onChatFragmentOpened();
+        mListener.onFragmentOpened();
     }
 
     @Override
@@ -118,13 +112,6 @@ public class ChatsFragment extends Fragment implements
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "Fragment Destroyed");
-        mListener.onChatFragmentClosed();
-    }
-
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
@@ -141,6 +128,12 @@ public class ChatsFragment extends Fragment implements
         mListener = null;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mListener.onFragmentClosed();
+    }
+
     /**
      * Click listeners
      */
@@ -152,52 +145,30 @@ public class ChatsFragment extends Fragment implements
     @Override
     public boolean onTouch(final View view, MotionEvent event) {
         mGestureDetector.onTouchEvent(event);
-        final int x = (int) event.getRawX();
+        final float x = event.getRawX();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN: {
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
-                mDeltaX = x - layoutParams.leftMargin;
+                mLastX = x;
                 break;
             }
             case MotionEvent.ACTION_MOVE: {
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
-                int leftMargin = x - mDeltaX;
-                if (leftMargin < 0) {
-                    leftMargin = 0;
-                    if (layoutParams.leftMargin == 0) {
-                        return false;
-                    }
+                float deltaX = x - mLastX;
+                float newX = view.getX() + deltaX;
+                if (newX > 0) {
+                    view.animate().x(newX).setDuration(0).start();
                 }
-                layoutParams.leftMargin = leftMargin;
-                layoutParams.rightMargin = -leftMargin;
-                view.setLayoutParams(layoutParams);
+                mLastX = x;
                 break;
             }
             case MotionEvent.ACTION_UP: {
-                final int startLeftMargin = ((RelativeLayout.LayoutParams) view.getLayoutParams()).leftMargin;
-                if (startLeftMargin <= 0) break;
-
-                Log.d(TAG, "Start margin: " + startLeftMargin + "     Width: " + mWidth);
-
-                Animation animation;
-                int duration;
-                if (startLeftMargin > mWidth/2) {
+                float viewX = view.getX();
+                if (viewX > mWidth/2) {
                     getParentFragment().getChildFragmentManager().popBackStack();
                     break;
-                } else {
-                    duration = (int) (25 * Math.log(startLeftMargin));
-                    animation = new Animation() {
-
-                        @Override
-                        protected void applyTransformation(float interpolatedTime, Transformation t) {
-                            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
-                            layoutParams.leftMargin = (int) (startLeftMargin - (startLeftMargin * interpolatedTime));
-                            view.setLayoutParams(layoutParams);
-                        }
-                    };
+                } else if (viewX > 0) {
+                    int duration = (int) (25 * Math.log(viewX));
+                    view.animate().x(0).setDuration(duration).start();
                 }
-                animation.setDuration(duration);
-                view.startAnimation(animation);
                 break;
             }
         }
@@ -210,7 +181,8 @@ public class ChatsFragment extends Fragment implements
     private class ChatsGestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            if (velocityX > 0) {
+            int flingVelocity = ViewConfiguration.get(getContext()).getScaledMinimumFlingVelocity();
+            if (velocityX > flingVelocity) {
                 getParentFragment().getChildFragmentManager().popBackStack();
                 return true;
             }
@@ -219,24 +191,16 @@ public class ChatsFragment extends Fragment implements
     }
 
     /**
-     * Fragment listener
-     */
-    public interface OnFragmentInteractionListener {
-        void onChatFragmentOpened();
-        void onChatFragmentClosed();
-    }
-
-    /**
      * Test data
      */
-    public static ArrayList<Candid> getTestData() {
-        ArrayList<Candid> testData = new ArrayList<>();
+    public static ArrayList<PrivateCandid> getTestData() {
+        ArrayList<PrivateCandid> testData = new ArrayList<>();
         for (int idx = 0; idx < 10; idx++) {
-            Candid candid;
+            PrivateCandid candid;
             if (idx % 2 == 0) {
-                candid = new Candid(R.drawable.test_friend, "Candid #" + idx, Candid.CandidSource.SENT);
+                candid = new PrivateCandid(R.drawable.test_friend, "PrivateCandid #" + idx, PrivateCandid.CandidSource.SENT);
             } else {
-                candid = new Candid(R.drawable.test_sticky_friend, "Candid #" + idx, Candid.CandidSource.RECEIVED);
+                candid = new PrivateCandid(R.drawable.test_sticky_friend, "PrivateCandid #" + idx, PrivateCandid.CandidSource.RECEIVED);
             }
             testData.add(candid);
         }

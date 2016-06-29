@@ -11,7 +11,7 @@ public class Friend implements Serializable {
     /**
      * TileSize enum
      */
-    private static final float LARGE_PERCENT = 0.2f, MEDIUM_PERCENT = 0.3f;
+    private static final float LARGE_PERCENT = 0.1f, MEDIUM_PERCENT = 0.3f;
     public enum TileSize {
         LARGE, MEDIUM, SMALL;
 
@@ -70,8 +70,18 @@ public class Friend implements Serializable {
             friends.get(idx).setTileSize(TileSize.SMALL);
         }
 
+        // Arrange tiles and return
+        return arrangeTiles(friends);
+    }
+
+    private static ArrayList<Friend> arrangeTiles(ArrayList<Friend> friends) {
         // Sort by most recent
         Collections.sort(friends, new FriendsLastCandidComparator());
+
+        // Arrange
+        for (int idx = 0, col = 0, row = 0; idx < friends.size(); idx++, col++) {
+            
+        }
 
         // Return
         return friends;

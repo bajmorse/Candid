@@ -50,8 +50,8 @@ public class StickyFriendsAdapter extends RecyclerView.Adapter<StickyFriendsAdap
 
     @Override
     public void onBindViewHolder(StickyFriendsViewHolder holder, int position) {
-        holder.mStickyFriendView.setTag(position);
         holder.mProfilePictureImageView.setImageResource(mStickyFriends.get(position).getProfilePic());
+        holder.itemView.setTag(position);
     }
 
     @Override
@@ -67,12 +67,10 @@ public class StickyFriendsAdapter extends RecyclerView.Adapter<StickyFriendsAdap
      * View holder
      */
     public static class StickyFriendsViewHolder extends RecyclerView.ViewHolder {
-        View mStickyFriendView;
         ImageView mProfilePictureImageView;
 
         public StickyFriendsViewHolder(View itemView, View.OnClickListener clickListener) {
             super(itemView);
-            mStickyFriendView = itemView;
             mProfilePictureImageView = (ImageView) itemView.findViewById(R.id.sticky_friend_profile_picture);
             itemView.setOnClickListener(clickListener);
         }

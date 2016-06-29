@@ -1,22 +1,18 @@
-package com.app.Chats;
-
-import android.graphics.drawable.Drawable;
-
-import com.app.R;
+package com.app.Connect.Chat;
 
 import java.io.Serializable;
 
 /**
  * Created by brent on 2016-06-23.
  */
-public class Candid implements Serializable {
+public class PrivateCandid implements Serializable {
 
     /**
      * Variables
      */
     // Serializable constant
     private static final long serialVersionUID = 2520;
-    // Candid information
+    // PrivateCandid information
     public enum CandidSource {
         SENT, RECEIVED
     }
@@ -27,7 +23,7 @@ public class Candid implements Serializable {
     /**
      * Constructor
      */
-    public Candid(int candidPicture, String candidCaption, CandidSource candidSource) {
+    public PrivateCandid(int candidPicture, String candidCaption, CandidSource candidSource) {
         mCandidPicture = candidPicture;
         mCandidCaption = candidCaption;
         mCandidSource = candidSource;

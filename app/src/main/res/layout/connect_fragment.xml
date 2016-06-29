@@ -1,6 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/connect_fragment"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
@@ -20,11 +21,11 @@
         android:layout_height="2dp"
         android:background="@color/mediumOrchid" />
 
-    <GridView
-        android:id="@+id/friends_grid"
+    <android.support.v7.widget.RecyclerView
         android:layout_below="@id/friends_separator"
+        android:id="@+id/friends_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="4"
         android:padding="5dp" />
+
 </RelativeLayout>

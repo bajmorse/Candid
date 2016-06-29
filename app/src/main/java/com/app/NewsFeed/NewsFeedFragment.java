@@ -1,13 +1,13 @@
 package com.app.NewsFeed;
 
-import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -18,20 +18,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.app.CandidViewPager;
+import com.app.Connect.ConnectFragment;
+import com.app.NewsFeed.CandidDisplay.CandidFragment;
+import com.app.OnFragmentInteractionListener;
 import com.app.R;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class NewsFeedFragment extends Fragment implements View.OnClickListener {
+public class NewsFeedFragment extends Fragment implements
+        NewsFeedListener,
+        View.OnClickListener {
 
     /**
      * Variables
      */
     // Logger Tag
     public static final String TAG = "NEWS FEED";
+    // Action Tags
+    public static final String OPEN_CAMERA_ACTION = "Open Camera";
     // Listener for fragment interaction with host activity
     private OnFragmentInteractionListener mListener;
     // Recycler view variables
@@ -84,7 +90,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener {
         mNewsFeedLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mNewsFeedRecyclerView.setLayoutManager(mNewsFeedLayoutManager);
 
-        mNewsFeedAdapter = new NewsFeedAdapter(getContext());
+        mNewsFeedAdapter = new NewsFeedAdapter(getContext(), this);
         mNewsFeedRecyclerView.setAdapter(mNewsFeedAdapter);
 
         return view;
@@ -123,7 +129,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener {
         mCameraImageView.animate().y(mNewsFeedRecyclerView.getHeight() + mNewsFeedHeaderView.getHeight() + ((CandidViewPager) getView().getParent()).getPaddingTop()).setDuration(775).start();
 
         // Animate activity elements out
-        mListener.showCamera();
+        mListener.onFragmentAction(OPEN_CAMERA_ACTION);
 
         // Set camera as open
         mCameraOpen = true;
@@ -146,7 +152,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
-     * Click listener
+     * News feed click listener
      */
     @Override
     public void onClick(View view) {
@@ -154,9 +160,28 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener {
             if (!mCameraOpen) {
                 showCamera();
             } else {
-
+                //TODO: Take Photo
             }
         }
+    }
+
+    @Override
+    public void openCandid(@NonNull Candid candid) {
+        Log.d(TAG, "Opening candid!");
+
+        // Create candid fragment
+        CandidFragment candidFragment = CandidFragment.newInstance();
+        Bundle candidBundle = new Bundle();
+        candidBundle.putSerializable(CandidFragment.CANDID_KEY, candid);
+        candidFragment.setArguments(candidBundle);
+        String candidFragmentTag = ConnectFragment.class.getName();
+
+        // Create fragment transaction
+        FragmentTransaction chatFragmentTransaction = getChildFragmentManager().beginTransaction();
+        chatFragmentTransaction.setCustomAnimations(R.anim.slide_in_from_bottom, R.anim.slide_out_to_bottom, R.anim.slide_in_from_bottom, R.anim.slide_out_to_bottom);
+        chatFragmentTransaction.replace(R.id.news_feed_fragment, candidFragment);
+        chatFragmentTransaction.addToBackStack(candidFragmentTag);
+        chatFragmentTransaction.commit();
     }
 
     /**
@@ -192,12 +217,5 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener {
                 }
             }
         }
-    }
-
-    /**
-     * Fragment listener
-     */
-    public interface OnFragmentInteractionListener {
-        void showCamera();
     }
 }

@@ -1,19 +1,27 @@
 package com.app.Profile;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.app.Connect.Chat.ChatFragment;
+import com.app.Profile.Support.SupportFragment;
 import com.app.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -25,14 +33,21 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 public class ProfileFragment extends Fragment implements
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener,
+        View.OnClickListener {
 
     // Logger tag
     public static final String TAG = "PROFILE_FRAG";
-    // Fragment listener
-    private OnFragmentInteractionListener mListener;
+    // Social media constants
+    private static final String FACEBOOK_TAG = "facebook";
+    private static final String TWITTER_TAG = "twitter";
+    private static final String GOOGLE_TAG = "google";
+    private static final String WEB_TAG = "web";
     // Map
     private GoogleMap mMap;
     private MapView mMapView;
@@ -65,25 +80,16 @@ public class ProfileFragment extends Fragment implements
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.profile_fragment, container, false);
 
-        // Setup fragment views
+        // Setup map
         setupMap(view, savedInstanceState);
 
+        // Setup profile buttons
+        setupButtons(view);
+
+        // Setup social media links
+        setupLinks(view);
+
         return view;
-    }
-
-    private void setupMap(View view, Bundle savedInstanceState) {
-        // Get map view
-        mMapView = (MapView) view.findViewById(R.id.profile_map);
-        mMapView.onCreate(savedInstanceState);
-
-        // Get map
-        mMap = mMapView.getMap();
-        mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        mMap.getUiSettings().setAllGesturesEnabled(false);
-        mMap.setMyLocationEnabled(true);
-
-        // Initialize map
-        MapsInitializer.initialize(getActivity());
     }
 
     @Override
@@ -116,27 +122,105 @@ public class ProfileFragment extends Fragment implements
         mMapView.onDestroy();
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    /**
+     * Setup functions
+     */
+    private void setupMap(View view, Bundle savedInstanceState) {
+        // Get map view
+        mMapView = (MapView) view.findViewById(R.id.profile_map);
+        mMapView.onCreate(savedInstanceState);
+
+        // Get map
+        mMap = mMapView.getMap();
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mMap.getUiSettings().setAllGesturesEnabled(false);
+        mMap.setMyLocationEnabled(true);
+
+        // Initialize map
+        MapsInitializer.initialize(getActivity());
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    private void setupButtons(View view) {
+        // Support
+        View supportView = view.findViewById(R.id.profile_support);
+        supportView.setOnClickListener(this);
     }
 
+    private void setupLinks(View view) {
+        // Facebook
+        View facebookButton = view.findViewById(R.id.facebook_button);
+        facebookButton.setOnClickListener(this);
+
+        // Twitter
+        View twitterButton = view.findViewById(R.id.twitter_button);
+        twitterButton.setOnClickListener(this);
+
+        // Google+
+        View googleButton = view.findViewById(R.id.google_plus_button);
+        googleButton.setOnClickListener(this);
+
+        // Website
+        View webButton = view.findViewById(R.id.website_button);
+        webButton.setOnClickListener(this);
+    }
+
+    /**
+     * Click listener
+     */
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    public void onClick(View view) {
+        Log.d(TAG, "Clicked!");
+
+        // Clicked support
+        if (view.getId() == R.id.profile_support) {
+            Log.d(TAG, "Clicked support!");
+
+            // Create support fragment
+            SupportFragment supportFragment = SupportFragment.newInstance();
+            String supportFragmentTag = SupportFragment.class.getName();
+
+            // Create fragment transaction
+            FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
+            fragmentTransaction.setCustomAnimations(R.anim.slide_in_from_left, R.anim.slide_out_to_left, R.anim.slide_in_from_left, R.anim.slide_out_to_left);
+            fragmentTransaction.replace(R.id.profile_fragment, supportFragment);
+            fragmentTransaction.addToBackStack(supportFragmentTag);
+            fragmentTransaction.commit();
+        }
+
+        // Clicked on a social media link
+        if (((View) view.getParent()).getId() == R.id.social_media_bar) {
+            Intent socialLinkIntent = new Intent(Intent.ACTION_VIEW);
+            PackageManager packageManager = getContext().getPackageManager();
+            if (view.getId() == R.id.facebook_button) {
+                String facebookUrl = "https://www.facebook.com/brenton.morse";
+                try {
+                    int versionCode = packageManager.getPackageInfo("com.facebook.katana", 0).versionCode;
+                    if (versionCode > 3002850) { // New facebook url
+                        facebookUrl = "fb://facewebmodal/f?href=" + facebookUrl;
+                    } else if (versionCode > 0) {
+                        facebookUrl = "fb://profile/561570385";
+                    }
+                } catch (PackageManager.NameNotFoundException e) {
+                    // Facebook app not installed
+                }
+                socialLinkIntent.setData(Uri.parse(facebookUrl));
+            } else if (view.getId() == R.id.twitter_button) {
+                String twitterUrl = "https://twitter.com/bajmorse";
+                try {
+                    packageManager.getPackageInfo("com.twitter.android", 0);
+                    twitterUrl = "twitter://user?user_id=829333471";
+                } catch (PackageManager.NameNotFoundException e) {
+                    // Twitter app not installed
+                }
+                socialLinkIntent.setData(Uri.parse(twitterUrl));
+            } else if (view.getId() == R.id.google_plus_button) {
+                String googleUrl = "https://plus.google.com/u/0/+BrentonMorse";
+                socialLinkIntent.setData(Uri.parse(googleUrl));
+            } else if (view.getId() == R.id.website_button) {
+                socialLinkIntent.setData(Uri.parse("http://www.google.com"));
+            }
+            getActivity().startActivity(socialLinkIntent);
+        }
     }
 
     /**
@@ -150,7 +234,7 @@ public class ProfileFragment extends Fragment implements
         // Update map to location
         if (mMyLocation != null) {
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mMyLocation.getLatitude(), mMyLocation.getLongitude()), 14);
-            mMap.animateCamera(cameraUpdate);
+            mMap.moveCamera(cameraUpdate);
         }
     }
 
@@ -162,12 +246,5 @@ public class ProfileFragment extends Fragment implements
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
-    }
-
-    /**
-     * Fragment listener
-     */
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 }
