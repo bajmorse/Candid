@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.app.R;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class NewsFeedThemeAdapter extends RecyclerView.Adapter<NewsFeedThemeAdapter.NewsFeedThemeViewHolder> implements View.OnClickListener {
 
@@ -86,19 +87,19 @@ public class NewsFeedThemeAdapter extends RecyclerView.Adapter<NewsFeedThemeAdap
         holder.mCandidImageView.setImageResource(mDataset.get(position).getPictureId());
         holder.itemView.setTag(position);
 
-//        Random rng = new Random();
-//        int heartNumber = rng.nextInt(7);
-//        int heartResource;
-//        switch (heartNumber) {
-//            case 0: heartResource = R.drawable.candid_purpleheartwithstars; break;
-//            case 1: heartResource = R.drawable.candid_goldheart; break;
-//            case 2: heartResource = R.drawable.candid_redheart; break;
-//            case 3: heartResource = R.drawable.candid_greenheart; break;
-//            case 4: heartResource = R.drawable.candid_blueheart; break;
-//            case 5: heartResource = R.drawable.candid_greyheart; break;
-//            case 6:default: heartResource = R.drawable.candid_brokenheart;
-//        }
-//        holder.mCandidHeartView.setImageResource(heartResource);
+        Random rng = new Random();
+        int heartNumber = rng.nextInt(7);
+        int heartResource;
+        switch (heartNumber) {
+            case 0: heartResource = R.drawable.candid_purpleheartwithstars; break;
+            case 1: heartResource = R.drawable.candid_goldheart; break;
+            case 2: heartResource = R.drawable.candid_redheart; break;
+            case 3: heartResource = R.drawable.candid_greenheart; break;
+            case 4: heartResource = R.drawable.candid_blueheart; break;
+            case 5: heartResource = R.drawable.candid_greyheart; break;
+            case 6:default: heartResource = R.drawable.candid_brokenheart;
+        }
+        holder.mCandidHeartView.setImageResource(heartResource);
     }
 
     /**
