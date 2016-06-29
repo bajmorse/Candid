@@ -1,4 +1,4 @@
-package com.app.Chats;
+package com.app.Connect.Chat;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -22,7 +22,7 @@ public class StorylineAdapter extends RecyclerView.Adapter<StorylineAdapter.Stor
     // Logging tag
     public static final String TAG = "STORYLINE_ADAPTER";
     // Data
-    ArrayList<Candid> mStorylineCandids;
+    ArrayList<PrivateCandid> mStorylineCandids;
     // Context
     private Context mContext;
     private View.OnClickListener mItemClickListener;
@@ -33,7 +33,7 @@ public class StorylineAdapter extends RecyclerView.Adapter<StorylineAdapter.Stor
     public StorylineAdapter(Context context, View.OnClickListener itemClickListener) {
         mContext = context;
         mItemClickListener = itemClickListener;
-        mStorylineCandids = ChatsFragment.getTestData();
+        mStorylineCandids = ChatFragment.getTestData();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class StorylineAdapter extends RecyclerView.Adapter<StorylineAdapter.Stor
 
     @Override
     public void onBindViewHolder(StorylineAdapter.StorylineViewHolder holder, int position) {
-        Candid candid = mStorylineCandids.get(position);
+        PrivateCandid candid = mStorylineCandids.get(position);
         holder.mCandidImage.setImageResource(candid.getCandidPicture());
         switch (candid.getCandidSource()) {
             case SENT: {

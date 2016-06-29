@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/news_feed_theme_item"
     android:orientation="vertical"
     android:layout_width="@dimen/horizontal_news_feed_item_width"
     android:layout_height="match_parent"

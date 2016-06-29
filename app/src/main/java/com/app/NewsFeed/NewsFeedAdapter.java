@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.app.R;
 
@@ -19,6 +18,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public static final String TAG = "NewsFeedAdapter";
     // Context
     private Context mContext;
+    private NewsFeedListener mListener;
     // View types
     private static final int HEADER_VIEW = 1;
     private static final int NORMAL_VIEW = 2;
@@ -27,8 +27,9 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     /**
      * Lifecycle functions
      */
-    public NewsFeedAdapter(Context context) {
+    public NewsFeedAdapter(Context context, NewsFeedListener listener) {
         mContext = context;
+        mListener = listener;
     }
 
     @Override
@@ -64,7 +65,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             viewHolder.mNewsFeedTheme.setLayoutManager(viewHolder.mNewsFeedThemeLayoutManager);
 
             // Setup adapter
-            viewHolder.mNewsFeedThemeAdapter = new NewsFeedThemeAdapter(mContext, NewsFeedThemeAdapter.THEMES[position-1]);
+            viewHolder.mNewsFeedThemeAdapter = new NewsFeedThemeAdapter(mContext, NewsFeedThemeAdapter.THEMES[position-1], mListener);
             viewHolder.mNewsFeedTheme.setAdapter(viewHolder.mNewsFeedThemeAdapter);
         }
     }

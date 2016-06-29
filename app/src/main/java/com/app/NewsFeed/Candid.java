@@ -1,23 +1,16 @@
 package com.app.NewsFeed;
 
-import android.graphics.drawable.Drawable;
-
-import java.lang.reflect.Array;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by brent on 2016-06-17.
  */
-public class NewsFeedData {
-
-    // Test Items
-    public static ArrayList<NewsFeedData> getTestNewsFeedItems() {
-        ArrayList<NewsFeedData> testNewsFeedData = new ArrayList<NewsFeedData>();
-        return testNewsFeedData;
-    }
+public class Candid implements Serializable {
 
     // Constants
     private final int MAX_TIME = 15;
+    private static final long serialVersionUID = 2520;
     // Variables
     private int mPictureId;
     private String mUsername;
@@ -25,7 +18,7 @@ public class NewsFeedData {
     private int mTimeLeft;
     private int mScore;
 
-    public NewsFeedData(int pictureId) {
+    public Candid(int pictureId) {
         mPictureId = pictureId;
     }
 

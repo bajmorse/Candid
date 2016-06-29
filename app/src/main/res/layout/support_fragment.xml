@@ -1,0 +1,49 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.app.Profile.Support.SupportFragment"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mediumOrchid" >
+
+    <EditText
+        android:id="@+id/support_subject_text"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Subject"
+        android:padding="5dp"
+        android:layout_margin="20dp"
+        android:inputType="textEmailSubject"
+        android:background="@drawable/support_text_rounded_corner" />
+
+    <EditText
+        android:id="@+id/support_email_text"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="E-mail (optional)"
+        android:padding="5dp"
+        android:layout_margin="20dp"
+        android:inputType="textEmailAddress"
+        android:background="@drawable/support_text_rounded_corner" />
+
+    <EditText
+        android:id="@+id/support_body_text"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="top"
+        android:hint="Body"
+        android:padding="5dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/support_text_rounded_corner" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:padding="5dp"
+        android:layout_margin="20dp"
+        android:textSize="20sp"
+        android:text="Submit"
+        android:background="@drawable/support_button_rounded_corner"/>
+
+</LinearLayout>

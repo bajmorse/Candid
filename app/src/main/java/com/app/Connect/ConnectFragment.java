@@ -1,45 +1,35 @@
 package com.app.Connect;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
 
-import com.app.Chats.ChatsFragment;
-import com.app.CustomViews.AutoFormattingGridView;
+import com.app.Connect.Chat.ChatFragment;
 import com.app.R;
 
 import java.io.Serializable;
 
-public class ConnectFragment extends Fragment implements
-        AdapterView.OnItemClickListener,
-        View.OnClickListener {
+public class ConnectFragment extends Fragment implements View.OnClickListener {
 
     /**
      * Variables
      */
     // Logging tag
     public static final String TAG = "CONNECT_FRAG";
-    // Fragment Listener
-    private OnFragmentInteractionListener mListener;
     // Sticky friends
     private RecyclerView mStickyFriendsView;
     private RecyclerView.LayoutManager mStickyFriendsLayoutManager;
     private RecyclerView.Adapter mStickyFriendsAdapter;
     // Friends list
-    private GridView mFriendsListView;
-    private BaseAdapter mFriendsListAdapter;
+    private RecyclerView mFriendsListView;
+    private RecyclerView.LayoutManager mFriendsListLayoutManager;
+    private RecyclerView.Adapter mFriendsListAdapter;
 
     public static ConnectFragment newInstance() {
         return new ConnectFragment();
@@ -71,66 +61,41 @@ public class ConnectFragment extends Fragment implements
 
     private void setupFriendsList(View view) {
         // Get friends list view
-        mFriendsListView = (GridView) view.findViewById(R.id.friends_grid);
+        mFriendsListView = (RecyclerView) view.findViewById(R.id.friends_grid);
+
+        // Setup layout manager
+        mFriendsListLayoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
+        mFriendsListView.setLayoutManager(mFriendsListLayoutManager);
 
         // Setup adapter
-        mFriendsListAdapter = new FriendsListAdapter(getContext());
+        mFriendsListAdapter = new FriendsListAdapter(getContext(), this);
         mFriendsListView.setAdapter(mFriendsListAdapter);
-
-        // Set click listener
-        mFriendsListView.setOnItemClickListener(this);
-    }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
     }
 
     /**
-     * Friends list click listener
+     * Click listener
      */
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // Get friend data for clicked friend
-        Friend friend = (Friend) mFriendsListAdapter.getItem(position);
-
-        // Open chat with that friend
-        openChat(friend);
-    }
-
     @Override
     public void onClick(View view) {
         // Get friend data for clicked friend
-        Friend friend = (Friend) ((StickyFriendsAdapter) mStickyFriendsAdapter).getItem((Integer) view.getTag());
+        Friend friend = null;
+        if (view.getId() == R.id.sticky_friends_item) {
+            friend = (Friend) ((StickyFriendsAdapter) mStickyFriendsAdapter).getItem((Integer) view.getTag());
+        } else if (view.getId() == R.id.friends_list_item) {
+            friend = (Friend) ((FriendsListAdapter) mFriendsListAdapter).getItem((Integer) view.getTag());
+        }
 
         // Open chat with that friend
-        openChat(friend);
+        if (friend != null) openChat(friend);
     }
 
     private void openChat(Friend friend) {
-        ChatsFragment friendChatFragment = new ChatsFragment();
+        // Create chat fragment
+        ChatFragment friendChatFragment = ChatFragment.newInstance();
         Bundle friendBundle = new Bundle();
-        friendBundle.putSerializable(ChatsFragment.FRIEND_KEY, (Serializable) friend);
+        friendBundle.putSerializable(ChatFragment.FRIEND_KEY, (Serializable) friend);
         friendChatFragment.setArguments(friendBundle);
-        String chatFragmentTag = ChatsFragment.class.getName();
+        String chatFragmentTag = ChatFragment.class.getName();
 
         // Create fragment transaction
         FragmentTransaction chatFragmentTransaction = getChildFragmentManager().beginTransaction();
@@ -138,12 +103,5 @@ public class ConnectFragment extends Fragment implements
         chatFragmentTransaction.replace(R.id.connect_fragment, friendChatFragment);
         chatFragmentTransaction.addToBackStack(chatFragmentTag);
         chatFragmentTransaction.commit();
-    }
-
-    /**
-     * Fragment Listener
-     */
-     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 }

@@ -23,6 +23,7 @@
     <color name="offWhite">#dddddd</color>
     <color name="offBlack">#222222</color>
     <color name="shadowColor">#aadddddd</color>
+    <color name="shadowBackground">#aa222222</color>
 
     <!-- New feed themes -->
     <color name="nightlifeThemeColor">#3322ff</color>
@@ -38,10 +39,15 @@
 
     <!-- News feed colors -->
     <color name="colorBackground">#e8e8e8</color>
+    <color name="colorBackgroundPressed">#a5a5a5</color>
     <color name="colorBackgroundTranslucent">#88e8e8e8</color>
     <color name="colorCameraButton">#ffffff</color>
     <color name="colorCameraButtonPressed">#dddddd</color>
 
     <!-- Profile colors -->
     <color name="profileScoreBackground">#55ffffff</color>
+
+    <!-- Support colors -->
+    <color name="supportTextBackground">#aacdcdcd</color>
+    <color name="supportButtonBackground">#bbababab</color>
 </resources>
