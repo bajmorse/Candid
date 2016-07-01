@@ -142,6 +142,9 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         getWindow().setStatusBarColor(getResources().getColor(R.color.transparent));
 
+        // Setup app cache
+        CandidUtils.setupCache();
+
         // Get the app bar
         mAppBar = (AppBarLayout) findViewById(R.id.appbar);
 

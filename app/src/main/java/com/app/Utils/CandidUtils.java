@@ -1,28 +1,29 @@
 package com.app.Utils;
 
-import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.util.LruCache;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.app.R;
-
-import java.io.Serializable;
-import java.util.Random;
+import java.lang.ref.WeakReference;
 
 /**
  * Created by brent on 2016-06-16.
@@ -30,9 +31,13 @@ import java.util.Random;
 public class CandidUtils {
 
     /**
+     * Variables
+     */
+    public static String TAG = "CANDID_UTILS";
+
+    /**
      * Permissions
      */
-
     private final static String PERMISSIONS_KEY = "permissions";
     private final static String REQUEST_CODE_KEY = "request";
 
@@ -107,7 +112,6 @@ public class CandidUtils {
     /**
      * UI Dialogs, Popups and Toasts
      */
-
     public static void showToast(@NonNull final Activity activity, final String text) {
         activity.runOnUiThread(new Runnable() {
             @Override
@@ -147,20 +151,148 @@ public class CandidUtils {
     }
 
     /**
-     * Color
+     * Bitmaps
      */
-    public static int getRandomColor(Context context) {
-        Random rng = new Random();
-        int color = rng.nextInt(7);
-        switch (color) {
-            case 0: return context.getResources().getColor(R.color.red);
-            case 1: return context.getResources().getColor(R.color.orange);
-            case 2: return context.getResources().getColor(R.color.yellow);
-            case 3: return context.getResources().getColor(R.color.green);
-            case 4: return context.getResources().getColor(R.color.blue);
-            case 5: return context.getResources().getColor(R.color.purple);
-            case 7: return context.getResources().getColor(R.color.pink);
-            default: return context.getResources().getColor(R.color.black);
+    private static LruCache<String, Bitmap> mAppCache;
+
+    public static void setupCache() {
+        // Setup cache
+        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+        final int cacheSize = maxMemory / 8;
+        Log.d(TAG, "Cache Size: " + cacheSize);
+        mAppCache = new LruCache<String, Bitmap>(cacheSize) {
+            @Override
+            protected int sizeOf(String key, Bitmap bitmap) {
+                return bitmap.getByteCount() / 1024;
+            }
+
+            @Override
+            protected void entryRemoved(boolean evicted, String key, Bitmap oldValue, Bitmap newValue) {
+                super.entryRemoved(evicted, key, oldValue, newValue);
+            }
+        };
+    }
+
+    public static void loadBitmap(final int imageResource, ImageView imageView, Context context) {
+        final String imageKey = String.valueOf(imageResource);
+        final Bitmap bitmap = getBitmapFromCache(imageKey);
+
+        if (bitmap != null) {
+            imageView.setImageBitmap(bitmap);
+        } else if (shouldCancelTask(imageResource, imageView)) {
+            final BitmapLoaderTask task = new BitmapLoaderTask(imageView, mAppCache, context);
+            final AsyncBitmapDrawable asyncBitmapDrawable = new AsyncBitmapDrawable(null, task, context);
+            imageView.setImageDrawable(asyncBitmapDrawable);
+            task.execute(imageResource);
         }
+    }
+
+    public static Bitmap getBitmapFromCache(String key) {
+        if (mAppCache != null) {
+            return mAppCache.get(key);
+        } else {
+            return null;
+        }
+    }
+
+    public static void addBitmapToCache(String key, Bitmap bitmap) {
+        if (getBitmapFromCache(key) == null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                Log.d(TAG, "Saving bitmap of size: " + bitmap.getAllocationByteCount());
+            }
+            mAppCache.put(key, bitmap);
+        }
+    }
+
+    public static boolean shouldCancelTask(final int imageResource, ImageView imageView) {
+        final BitmapLoaderTask task = getBitmapLoaderTask(imageView);
+
+        if (task != null) {
+            final int bitmapResource = task.mBitmapResource;
+            if (bitmapResource == 0 || bitmapResource != imageResource) {
+                task.cancel(true);
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static class BitmapLoaderTask extends AsyncTask<Integer, Void, Bitmap> {
+        private final WeakReference<ImageView> mImageViewReference;
+        private final WeakReference<Context> mContextReference;
+        private final WeakReference<LruCache<String, Bitmap>> mCacheReference;
+        private int mBitmapResource;
+
+        public BitmapLoaderTask(ImageView imageView, LruCache cache, Context context) {
+            mImageViewReference = new WeakReference<>(imageView);
+            mContextReference = new WeakReference<>(context);
+            mCacheReference = new WeakReference<LruCache<String, Bitmap>>(cache);
+        }
+
+        @Override
+        protected Bitmap doInBackground(Integer... params) {
+            mBitmapResource = params[0];
+            Bitmap bitmap = scaleBitmap(mBitmapResource, 100, 175, mContextReference.get());
+            addBitmapToCache(String.valueOf(mBitmapResource), bitmap);
+            return bitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            if (isCancelled()) bitmap = null;
+
+            if (bitmap != null) {
+                final ImageView imageView = mImageViewReference.get();
+                final BitmapLoaderTask task = getBitmapLoaderTask(imageView);
+                if (this == task) {
+                    imageView.setImageBitmap(bitmap);
+                }
+            }
+        }
+    }
+
+    public static Bitmap scaleBitmap(final int imageResource, final int targetWidth, final int targetHeight, Context context) {
+        // Get bitmap size
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(context.getResources(), imageResource, options);
+        int imageHeight = options.outHeight;
+        int imageWidth = options.outWidth;
+
+        // Calculate smallest in sample size
+        int inSampleSize = 1;
+        if (imageHeight > targetHeight || imageWidth > targetWidth) {
+            final int halfHeight = imageHeight / 2;
+            final int halfWidth = imageWidth / 2;
+            while ((halfHeight / inSampleSize) > targetHeight && (halfWidth / inSampleSize) > targetWidth) inSampleSize *= 2;
+        }
+        Log.d(TAG, "Image: " + imageWidth + " x " + imageHeight + "     Target: " + targetWidth + " x " + targetHeight + "     inSampleSize: " + inSampleSize);
+        options.inSampleSize = inSampleSize;
+        options.inJustDecodeBounds = false;
+
+        return BitmapFactory.decodeResource(context.getResources(), imageResource, options);
+    }
+
+    public static class AsyncBitmapDrawable extends BitmapDrawable {
+        private final WeakReference<BitmapLoaderTask> mBitmapTaskReference;
+
+        public AsyncBitmapDrawable(Bitmap bitmap, BitmapLoaderTask task, Context context) {
+            super(context.getResources(), bitmap);
+            mBitmapTaskReference = new WeakReference<>(task);
+        }
+
+        public BitmapLoaderTask getBitmapTask() {
+            return mBitmapTaskReference.get();
+        }
+    }
+
+    public static BitmapLoaderTask getBitmapLoaderTask(@NonNull ImageView imageView) {
+        final Drawable drawable = imageView.getDrawable();
+        if (drawable instanceof AsyncBitmapDrawable) {
+            final AsyncBitmapDrawable bitmap = (AsyncBitmapDrawable) drawable;
+            return bitmap.getBitmapTask();
+        }
+        return null;
     }
 }

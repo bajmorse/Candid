@@ -2,6 +2,7 @@ package com.app.Connect;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.support.v4.util.LruCache;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.DisplayMetrics;
@@ -15,6 +16,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.app.R;
+import com.app.Utils.CandidUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -88,7 +90,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 //        }
 
         // Set friend's photo
-        holder.mProfilePictureImageView.setImageResource(friend.getProfilePic());
+        CandidUtils.loadBitmap(friend.getProfilePic(), holder.mProfilePictureImageView, mContext);
     }
 
     @Override

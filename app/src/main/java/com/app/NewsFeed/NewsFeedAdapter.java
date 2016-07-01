@@ -1,6 +1,7 @@
 package com.app.NewsFeed;
 
 import android.content.Context;
+import android.support.v4.util.LruCache;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -55,10 +56,6 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (holder instanceof NewsFeedHeaderViewHolder) {
         } else if (holder instanceof NewsFeedViewHolder) {
             NewsFeedViewHolder viewHolder = (NewsFeedViewHolder) holder;
-
-            // Set theme color
-//            int themeColor = NewsFeedThemeAdapter.THEMES[position-1].getTransparentColor();
-//            viewHolder.mNewsFeedTheme.setBackgroundColor(mContext.getResources().getColor(themeColor));
 
             // Setup layout manager
             viewHolder.mNewsFeedThemeLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);

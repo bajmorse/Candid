@@ -1,6 +1,8 @@
 package com.app.NewsFeed;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.support.v4.util.LruCache;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.R;
+import com.app.Utils.CandidUtils;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -84,7 +87,8 @@ public class NewsFeedThemeAdapter extends RecyclerView.Adapter<NewsFeedThemeAdap
 
     @Override
     public void onBindViewHolder(NewsFeedThemeViewHolder holder, int position) {
-        holder.mCandidImageView.setImageResource(mDataset.get(position).getPictureId());
+        CandidUtils.loadBitmap(mDataset.get(position).getPictureId(), holder.mCandidImageView, mContext);
+
         holder.itemView.setTag(position);
 
         Random rng = new Random();
