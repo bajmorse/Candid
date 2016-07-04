@@ -87,6 +87,8 @@ public class NewsFeedThemeAdapter extends RecyclerView.Adapter<NewsFeedThemeAdap
 
     @Override
     public void onBindViewHolder(NewsFeedThemeViewHolder holder, int position) {
+        final int width = mContext.getResources().getDimensionPixelSize(R.dimen.horizontal_news_feed_item_width);
+        final int height = mContext.getResources().getDimensionPixelSize(R.dimen.horizontal_news_feed_height);
         CandidUtils.loadBitmap(mDataset.get(position).getPictureId(), holder.mCandidImageView, mContext);
 
         holder.itemView.setTag(position);

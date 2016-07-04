@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.app.R;
+import com.app.Utils.CandidUtils;
 
 import java.util.ArrayList;
 
@@ -50,7 +51,10 @@ public class StickyFriendsAdapter extends RecyclerView.Adapter<StickyFriendsAdap
 
     @Override
     public void onBindViewHolder(StickyFriendsViewHolder holder, int position) {
-        holder.mProfilePictureImageView.setImageResource(mStickyFriends.get(position).getProfilePic());
+        final int width = mContext.getResources().getDimensionPixelSize(R.dimen.sticky_friends_item_width);
+        final int height = mContext.getResources().getDimensionPixelSize(R.dimen.sticky_friends_height);
+
+        CandidUtils.loadBitmap(mStickyFriends.get(position).getProfilePic(), holder.mProfilePictureImageView, width, height, mContext);
         holder.itemView.setTag(position);
     }
 

@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/news_feed_candid_image_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <TextView
         android:id="@+id/news_feed_caption_text_view"

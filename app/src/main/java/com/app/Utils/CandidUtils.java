@@ -174,13 +174,22 @@ public class CandidUtils {
     }
 
     public static void loadBitmap(final int imageResource, ImageView imageView, Context context) {
+        loadBitmap(imageResource, imageView, 100, 175, context);
+    }
+
+    public static void loadBitmap(final int imageResource, ImageView imageView, final int width, final int height, Context context) {
+        if (width <= 0 || height <= 0) {
+            Log.w(TAG, "Can't draw a bitmap of zero pixels");
+            return;
+        }
+
         final String imageKey = String.valueOf(imageResource);
         final Bitmap bitmap = getBitmapFromCache(imageKey);
 
         if (bitmap != null) {
             imageView.setImageBitmap(bitmap);
         } else if (shouldCancelTask(imageResource, imageView)) {
-            final BitmapLoaderTask task = new BitmapLoaderTask(imageView, mAppCache, context);
+            final BitmapLoaderTask task = new BitmapLoaderTask(imageView, width, height, mAppCache, context);
             final AsyncBitmapDrawable asyncBitmapDrawable = new AsyncBitmapDrawable(null, task, context);
             imageView.setImageDrawable(asyncBitmapDrawable);
             task.execute(imageResource);
@@ -222,18 +231,20 @@ public class CandidUtils {
         private final WeakReference<ImageView> mImageViewReference;
         private final WeakReference<Context> mContextReference;
         private final WeakReference<LruCache<String, Bitmap>> mCacheReference;
-        private int mBitmapResource;
+        private int mBitmapResource, mHeight, mWidth;
 
-        public BitmapLoaderTask(ImageView imageView, LruCache cache, Context context) {
+        public BitmapLoaderTask(ImageView imageView, final int width, final int height, LruCache cache, Context context) {
             mImageViewReference = new WeakReference<>(imageView);
             mContextReference = new WeakReference<>(context);
             mCacheReference = new WeakReference<LruCache<String, Bitmap>>(cache);
+            mWidth = width;
+            mHeight = height;
         }
 
         @Override
         protected Bitmap doInBackground(Integer... params) {
             mBitmapResource = params[0];
-            Bitmap bitmap = scaleBitmap(mBitmapResource, 100, 175, mContextReference.get());
+            Bitmap bitmap = scaleBitmap(mBitmapResource, mWidth, mHeight, mContextReference.get());
             addBitmapToCache(String.valueOf(mBitmapResource), bitmap);
             return bitmap;
         }
