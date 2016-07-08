@@ -54,7 +54,8 @@ public class StickyFriendsAdapter extends RecyclerView.Adapter<StickyFriendsAdap
         final int width = mContext.getResources().getDimensionPixelSize(R.dimen.sticky_friends_item_width);
         final int height = mContext.getResources().getDimensionPixelSize(R.dimen.sticky_friends_height);
 
-        CandidUtils.loadBitmap(mStickyFriends.get(position).getProfilePic(), holder.mProfilePictureImageView, width, height, mContext);
+        holder.mProfilePictureImageView.setImageResource(mStickyFriends.get(position).getProfilePic());
+//        CandidUtils.loadBitmap(mStickyFriends.get(position).getProfilePic(), holder.mProfilePictureImageView, width, height, mContext);
         holder.itemView.setTag(position);
     }
 

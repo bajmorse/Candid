@@ -60,6 +60,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             // Setup layout manager
             viewHolder.mNewsFeedThemeLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
             viewHolder.mNewsFeedTheme.setLayoutManager(viewHolder.mNewsFeedThemeLayoutManager);
+            viewHolder.itemView.setBackgroundColor(mContext.getResources().getColor(NewsFeedThemeAdapter.THEMES[position-1].getColor()));
 
             // Setup adapter
             viewHolder.mNewsFeedThemeAdapter = new NewsFeedThemeAdapter(mContext, NewsFeedThemeAdapter.THEMES[position-1], mListener);

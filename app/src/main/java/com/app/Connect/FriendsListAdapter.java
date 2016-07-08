@@ -92,6 +92,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         // Set friend's photo
         final int width = mContext.getResources().getDimensionPixelSize(R.dimen.friends_list_item_width);
         final int height = mContext.getResources().getDimensionPixelSize(R.dimen.friends_list_item_height);
+        holder.mProfilePictureImageView.setImageResource(mFriends.get(position).getProfilePic());
         CandidUtils.loadBitmap(friend.getProfilePic(), holder.mProfilePictureImageView, width, height, mContext);
     }
 
